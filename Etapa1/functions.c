@@ -15,8 +15,5 @@ int isRunning(){
 }
 
 int printLineNumber(){	
-	if(Line < getLineNumber()){
-		Line = getLineNumber();
-		printf("\nLinha %d :", Line);
-	}
+	printf("\nLinha %d :", getLineNumber());
 }

@@ -1,25 +1,16 @@
-byte 123;
-int 123bobalhao_ = BAAB;
-loop _23;
-if tcholoris then por else nada;
-float trindade;
-ZZ asiudhasiudhasiudhiuasdasdasdasdsda;
+byte int float if then else loop leap or and not read print return
+, ; : ( ) [ ] { } + - * / < > = & $ #
+<= >= == !=
+0 lndoasifhsem lsijd_diaushd 0_02949_klsfs if_int_then
+O I H G F E D C B A ABC DEF HIO
+HIO.ABC O.O O.
+'T''a''b''v' '0' '''
+" " "TESTE" ";" "\"" "\n" "teste de \" \n" ZZ
+ZZ oi :)
+"Teste" ZZ "teste2"
 XXX
-	testando comentario de loucurada
-	varias linhas 'e pra ser muito loucurada isso aqui
-		abacate
-
+AKjsbiasudbakjsdh
+kslkajsdlasjd
+ABC "daushd" 'c'
 XXX
-
-ab or __;
-992831_aiduhas and z_123;
-partiu not naopartiu;
-
-print("coco");
-return 0;
-
-_34beaba <= 82;
-
-o1_23o >= 23k;
-213ds_ == 39dsa;
-2 != 1;
+ABC

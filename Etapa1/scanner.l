@@ -4,12 +4,12 @@
 #include "functions.c"
 
 
-extern int Running;
-extern int LineNumber;
+int Running=1;
+int LineNumber=1;
 
 %}
 
-
+%x COMMENT_LINE
 %x COMMENT
 
 %%
@@ -31,8 +31,7 @@ extern int LineNumber;
 [OIHGFEDCBA]+	return LIT_INTEGER;
 [OIHGFEDCBA]+"."[OIHGFEDCBA]+	return LIT_FLOAT;
 "'"."'"			return LIT_CHAR;
-"\""[^\"\n]+"\""	return LIT_STRING;
-"\"\\\"\""		return LIT_STRING;
+\"(\\\"|[^\"\n])+\"	return LIT_STRING;
 "<="			return OPERATOR_LE;
 ">="			return OPERATOR_GE;
 "=="			return OPERATOR_EQ;
@@ -40,12 +39,15 @@ extern int LineNumber;
 [a-z0-9_]+		return TK_IDENTIFIER;
 [,;:(){}]		return yytext[0];
 "["|"]"			return yytext[0];
-[+\-*<>=&$#]	return yytext[0];
-"ZZ".*
+[+\-*/<>=&$#]	return yytext[0];
+"ZZ"			BEGIN(COMMENT_LINE);
 "XXX"			BEGIN(COMMENT);
 \n				LineNumber++;
 " "
 .				return TOKEN_ERROR;
+
+<COMMENT_LINE>\n 	{LineNumber++; BEGIN(INITIAL);}
+<COMMENT_LINE>.
 
 <COMMENT>\n 	LineNumber++;
 <COMMENT>"XXX"	BEGIN(INITIAL);

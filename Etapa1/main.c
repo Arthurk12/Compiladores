@@ -5,11 +5,6 @@ extern int yylex();
 extern char *yytext;
 extern FILE *yyin;
 
-
-int Running = 1;
-int LineNumber = 1; 
-int Line = 0;
-
 int isRunning();
 int getLineNumber();
 int printLineNumber();
@@ -26,11 +21,13 @@ int main(int argc, char** argv){
 		printf("Erro ao abrir o arquivo de entrada!");
 		exit(1);
 	}
-
+	int line = 0;
 	while(isRunning()){
 		tok = yylex();
-		printLineNumber();
-		
+		if(line != getLineNumber()){
+			line = getLineNumber();
+			printLineNumber();
+		}
 		switch(tok){
 		
 			case KW_BYTE: 		printf("KW_BYTE "); break;
@@ -53,6 +50,9 @@ int main(int argc, char** argv){
 			case KW_RETURN: 		printf("KW_RETURN "); break;
 			case TK_IDENTIFIER:	printf("TK_IDENTIFIER "); break;
 			case LIT_INTEGER:		printf("LIT_INTEGER "); break;
+			case LIT_FLOAT:		printf("LIT_FLOAT "); break;
+			case LIT_CHAR:		printf("LIT_CHAR "); break;
+			case LIT_STRING:		printf("LIT_STRING "); break;
 			case ';':			printf("POINTCOMMA");break;
 			case TOKEN_ERROR:		printf("TOKEN_ERROR "); break;
 			default: 			printf("%s ", yytext); break;
@@ -60,5 +60,4 @@ int main(int argc, char** argv){
 		}
 	}
 }
-
 
