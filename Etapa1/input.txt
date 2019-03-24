@@ -1,15 +1,15 @@
 byte 123;
-int 123bobalhao_ = BALLAB;
+int 123bobalhao_ = BAAB;
 loop _23;
-if TCHOLORIS then por else nada;
+if tcholoris then por else nada;
 float trindade;
-// asiudhasiudhasiudhiuasdasdasdasdsda;
-/*
+ZZ asiudhasiudhasiudhiuasdasdasdasdsda;
+XXX
 	testando comentario de loucurada
 	varias linhas 'e pra ser muito loucurada isso aqui
 		abacate
 
-*/
+XXX
 
 ab or __;
 992831_aiduhas and z_123;

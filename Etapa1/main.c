@@ -55,7 +55,7 @@ int main(int argc, char** argv){
 			case LIT_INTEGER:		printf("LIT_INTEGER "); break;
 			case ';':			printf("POINTCOMMA");break;
 			case TOKEN_ERROR:		printf("TOKEN_ERROR "); break;
-			default: 			printf("INVALID WORD "); break;
+			default: 			printf("%s ", yytext); break;
 
 		}
 	}
