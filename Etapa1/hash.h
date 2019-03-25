@@ -16,7 +16,7 @@ hashNode *HashTable[HASHSIZE];
 
 extern char *yytext;
 
-void initMi(void);
+void initMe(void);
 int hashAddress(char *lit);
 hashNode* insert(int type, char *lit);
 void hashPrint(void);

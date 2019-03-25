@@ -1,6 +1,6 @@
 #include "hash.h"
 
-void initMi(void) {
+void initMe(void) {
 int i=0;
 	for(i=0; i<HASHSIZE; i++){
 		HashTable[i] = 0;
@@ -15,10 +15,10 @@ int i;
 		address = (address * lit[i]) % HASHSIZE +1;
 	}
 
-	return address;
+	return address-1;
 }
 
-hashNode* hasFind(char *lit, int address){
+hashNode* hashFind(char *lit, int address){
 hashNode *node;
 
 	
@@ -35,7 +35,7 @@ hashNode* insert(int type, char *lit){
 hashNode *newNode;
 int address = hashAddress(lit);
 
-	if(newNode = hasFind(lit, address)!=0)
+	if(newNode = hashFind(lit, address)!=0)
 		return newNode;	
 
 		newNode = (hashNode *) calloc(1, sizeof(hashNode));
@@ -56,6 +56,6 @@ hashNode *node;
 	
 	for(i=0; i<HASHSIZE; i++)
 		for(node = HashTable[i]; node!=0; node=node->next)
-			printf("Hash_Table_Node[%d]: %s  \n", i, node->lit);
+			printf("Hash_Table_Node[%d]: %s  -> %i \n", i, node->lit, node->type);
 
 }
