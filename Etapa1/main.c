@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "hash.h"
+#include "tokens.h"
 
 extern int yylex();
 extern char *yytext;
@@ -11,6 +13,8 @@ int printLineNumber();
 
 int main(int argc, char** argv){
 	int tok = 0;
+	
+	initMi();
 
 	if(argc < 2){
 		printf("Use o comando: ./etapa1 input.txt \n");
@@ -48,16 +52,18 @@ int main(int argc, char** argv){
 			case KW_READ:		printf("KW_READ "); break;			
 			case KW_PRINT: 		printf("KW_PRINT "); break;
 			case KW_RETURN: 		printf("KW_RETURN "); break;
-			case TK_IDENTIFIER:	printf("TK_IDENTIFIER "); break;
-			case LIT_INTEGER:		printf("LIT_INTEGER "); break;
-			case LIT_FLOAT:		printf("LIT_FLOAT "); break;
-			case LIT_CHAR:		printf("LIT_CHAR "); break;
-			case LIT_STRING:		printf("LIT_STRING "); break;
+			case TK_IDENTIFIER:	insert(TK_IDENTIFIER, yytext); printf("TK_IDENTIFIER "); break;
+			case LIT_INTEGER:		insert(LIT_INTEGER, yytext); printf("LIT_INTEGER "); break;
+			case LIT_FLOAT:		insert(LIT_FLOAT, yytext); printf("LIT_FLOAT "); break;
+			case LIT_CHAR:		insert(LIT_CHAR, yytext); printf("LIT_CHAR "); break;
+			case LIT_STRING:		insert(LIT_CHAR, yytext); printf("LIT_CHAR "); break;
 			case ';':			printf("POINTCOMMA");break;
 			case TOKEN_ERROR:		printf("TOKEN_ERROR "); break;
 			default: 			printf("%s ", yytext); break;
 
 		}
+		
 	}
+hashPrint();
 }
 
