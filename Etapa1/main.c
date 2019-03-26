@@ -61,7 +61,7 @@ int main(int argc, char** argv){
 			case LIT_INTEGER:	printf("LIT_INTEGER "); break;
 			case LIT_FLOAT:		printf("LIT_FLOAT "); break;
 			case LIT_CHAR:		printf("LIT_CHAR "); break;
-			case LIT_STRING:	printf("LIT_CHAR "); break;
+			case LIT_STRING:	printf("LIT_STRING "); break;
 			case TOKEN_ERROR:	printf("TOKEN_ERROR "); break;
 			default: 			printf("%s ", yytext); break;
 
