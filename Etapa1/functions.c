@@ -19,6 +19,6 @@ int isRunning(){
 		return 0;
 }
 
-int printLineNumber(){	
+void printLineNumber(){	
 	printf("\nLinha %d :", getLineNumber());
 }
