@@ -1,3 +1,8 @@
+/*
+ARTHUR BÖCKMANN GROSSI - 00275607
+IAN FISCHER SCHILLING - 00275603
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "hash.h"
@@ -63,6 +68,6 @@ int main(int argc, char** argv){
 		}
 		
 	}
-hashPrint();
+	hashPrint();
 }
 
