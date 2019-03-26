@@ -4,9 +4,8 @@ IAN FISCHER SCHILLING - 00275603
 */
 
 #include <stdio.h>
+#include "functions.h"
 
-extern int Running;
-extern int LineNumber;
 
 int getLineNumber(){
 	return LineNumber;
@@ -21,4 +20,21 @@ int isRunning(){
 
 void printLineNumber(){	
 	printf("\nLinha %d :", getLineNumber());
+}
+
+char* trimQuotation(int type, char* lit){
+	char *trimmedLit;
+
+	trimmedLit = calloc(strlen(lit-1), sizeof(char));
+
+	if(type == LIT_CHAR){
+		
+		strncpy(trimmedLit, &lit[1], 1);
+	}else if(type == LIT_STRING){
+
+		trimmedLit = strtok(lit, "\"");
+	}else{
+		return lit;
+	}
+	return trimmedLit;
 }

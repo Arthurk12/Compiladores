@@ -1,5 +1,6 @@
 #include "hash.h"
 #include "tokens.h"
+#include "functions.h"
 
 void initMe(void) {
 	int i=0;
@@ -47,23 +48,6 @@ hashNode* hashInsert(int type, char *lit){
 	HashTable[address] = newNode;
 
 	return newNode;
-}
-
-char* trimQuotation(int type, char* lit){
-	char *trimmedLit;
-
-	trimmedLit = calloc(strlen(lit-1), sizeof(char));
-
-	if(type == LIT_CHAR){
-		
-		strncpy(trimmedLit, &lit[1], 1);
-	}else if(type == LIT_STRING){
-
-		trimmedLit = strtok(lit, "\"");
-	}else{
-		return lit;
-	}
-	return trimmedLit;
 }
 
 void hashPrint(){

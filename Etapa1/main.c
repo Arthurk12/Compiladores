@@ -7,6 +7,7 @@ IAN FISCHER SCHILLING - 00275603
 #include <stdlib.h>
 #include "hash.h"
 #include "tokens.h"
+#include "functions.h"
 
 extern int yylex();
 extern char *yytext;
@@ -14,7 +15,7 @@ extern FILE *yyin;
 
 int isRunning();
 int getLineNumber();
-int printLineNumber();
+//void printLineNumber();
 
 int main(int argc, char** argv){
 	int tok = 0;

@@ -27,4 +27,3 @@ int hashAddress(char *lit);
 hashNode* hashInsert(int type, char *lit);
 void hashPrint(void);
 hashNode* hashFind(char *lit, int address);
-char* trimQuotation(int type, char* lit);
