@@ -1,0 +1,9 @@
+ZZ asdihasiudhasiuhduashd
+
+byte a = O;
+byte 1 = O;
+int v [IO]: I O O O O O O O O O;
+int mat[IO];
+float f = IO.EE;
+byte c = 'x';
+byte x = DE;

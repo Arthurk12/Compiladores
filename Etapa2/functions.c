@@ -5,6 +5,7 @@ IAN FISCHER SCHILLING - 00275603
 
 #include <stdio.h>
 #include "functions.h"
+#include "y.tab.h"
 
 
 int getLineNumber(){

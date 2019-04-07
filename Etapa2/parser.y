@@ -1,8 +1,9 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "functions.h"
 
-int yyerror(char msg);
+void yyerror(char *msg);
 int yylex();
 
 %}
@@ -34,11 +35,33 @@ int yylex();
 
 %%
 
-//RULES
+programa    : declist
+            ;
 
+declist     : dec declist
+            |
+            ;
+
+dec         : KW_BYTE TK_IDENTIFIER '=' val ';'
+            | KW_INT TK_IDENTIFIER '=' LIT_INTEGER ';'
+            | KW_INT TK_IDENTIFIER '[' LIT_INTEGER ']' ';'
+            | KW_INT TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist ';'
+            | KW_FLOAT TK_IDENTIFIER '=' LIT_FLOAT ';'
+            ;
+
+inilist     : val inilist
+            |
+            ;
+
+val         : LIT_CHAR
+            | LIT_FLOAT
+            | LIT_INTEGER
+            | LIT_STRING
+            ;
+            
 %%
 
-int yyerror(char msg){
-    fprinf(stderr, "Syntax error!\n");
+void yyerror(char *msg){
+    fprintf(stderr, "Syntax error! on line: %d\n", getLineNumber());
     exit(3);
 }

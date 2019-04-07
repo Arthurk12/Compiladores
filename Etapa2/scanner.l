@@ -1,6 +1,7 @@
 %{
 #include "functions.c"
 #include "hash.h"
+#include "y.tab.h"
 
 
 int Running=1;
@@ -27,18 +28,19 @@ int LineNumber=1;
 "read"							return KW_READ;
 "print"							return KW_PRINT;
 "return"						return KW_RETURN;
-[OIHGFEDCBA]+						{hashInsert(LIT_INTEGER, yytext);return LIT_INTEGER;}
-[OIHGFEDCBA]+"."[OIHGFEDCBA]+				{hashInsert(LIT_FLOAT, yytext);return LIT_FLOAT;}
+[OIHGFEDCBA]+					{hashInsert(LIT_INTEGER, yytext);return LIT_INTEGER;}
+[OIHGFEDCBA]+"."[OIHGFEDCBA]+	{hashInsert(LIT_FLOAT, yytext);return LIT_FLOAT;}
 "'"."'"							{hashInsert(LIT_CHAR, yytext);return LIT_CHAR;}
-\"(\\\"|[^\"\n])*\"					{hashInsert(LIT_STRING, yytext);return LIT_STRING;}
+\"(\\\"|[^\"\n])*\"				{hashInsert(LIT_STRING, yytext);return LIT_STRING;}
 "<="							return OPERATOR_LE;
 ">="							return OPERATOR_GE;
 "=="							return OPERATOR_EQ;
 "!="							return OPERATOR_DIF;
 [a-z0-9_]+						{hashInsert(TK_IDENTIFIER, yytext);return TK_IDENTIFIER;}
-[,;:(){}]						return yytext[0];
+[,;(){}]						return yytext[0];
 "["|"]"							return yytext[0];
-[+\-*/<>=&$#]						return yytext[0];
+":"								return yytext[0];
+[+\-*/<>=&$#]					return yytext[0];
 "ZZ"							BEGIN(COMMENT_LINE);
 "XXX"							BEGIN(COMMENT);
 \n								LineNumber++;
