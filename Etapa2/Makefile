@@ -12,13 +12,13 @@ etapa2: y.tab.o lex.yy.o  main.o hash.o
 main.o: main.c
 	gcc -c main.c -Wall
 hash.o: hash.c
-	gcc -c hash.c
+	gcc -c hash.c -Wall
 y.tab.o: y.tab.c
-	gcc -c y.tab.c
+	gcc -c y.tab.c -Wall
 y.tab.c: parser.y
-	bison -y -d parser.y
+	bison -y -d parser.y -Wall
 lex.yy.o: lex.yy.c
-	gcc -c lex.yy.c
+	gcc -c lex.yy.c -Wall
 lex.yy.c: scanner.l
 	flex --header-file=lex.yy.h scanner.l 
 clean:
