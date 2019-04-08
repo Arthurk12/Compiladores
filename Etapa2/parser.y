@@ -47,15 +47,15 @@ declist     : dec declist
             |
             ;
 
-dec         : KW_BYTE TK_IDENTIFIER '=' expr                            ';'
+dec         : KW_BYTE TK_IDENTIFIER '=' val                             ';'
             | KW_BYTE TK_IDENTIFIER '[' LIT_INTEGER ']'                 ';'
             | KW_BYTE TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist     ';'
             | KW_BYTE TK_IDENTIFIER '(' paramlist ')' block             ';'
-            | KW_INT TK_IDENTIFIER '=' LIT_INTEGER                      ';'
+            | KW_INT TK_IDENTIFIER '=' val                              ';'
             | KW_INT TK_IDENTIFIER '[' LIT_INTEGER ']'                  ';'
             | KW_INT TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist      ';'
             | KW_INT TK_IDENTIFIER '(' paramlist ')' block              ';'
-            | KW_FLOAT TK_IDENTIFIER '=' LIT_FLOAT                      ';'
+            | KW_FLOAT TK_IDENTIFIER '=' val                            ';'
             | KW_FLOAT TK_IDENTIFIER '[' LIT_INTEGER ']'                ';'
             | KW_FLOAT TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist    ';'
             | KW_FLOAT TK_IDENTIFIER '(' paramlist ')' block            ';'
