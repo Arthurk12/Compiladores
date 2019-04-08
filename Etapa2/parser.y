@@ -33,7 +33,9 @@ int yylex();
 %token LIT_STRING
 %token TOKEN_ERROR
 
-%left OPERATOR_GE OPERATOR_LE OPERATOR_EQ OPERATOR_NOT OPERATOR_AND OPERATOR_OR '>' '<'
+%left OPERATOR_LE OPERATOR_GE OPERATOR_EQ 
+%left '<' '>'
+%left OPERATOR_AND OPERATOR_OR
 %left '+' '-'
 %left '*' '/'
 %left '(' ')'
