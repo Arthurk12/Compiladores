@@ -35,7 +35,8 @@ int yylex();
 
 %left OPERATOR_LE OPERATOR_GE OPERATOR_EQ 
 %left '<' '>'
-%left OPERATOR_AND OPERATOR_OR
+%left OPERATOR_OR
+%left OPERATOR_AND
 %left '+' '-'
 %left '*' '/'
 %left '(' ')'
@@ -77,6 +78,7 @@ expr        : LIT_INTEGER
             | LIT_CHAR
             | TK_IDENTIFIER
             | TK_IDENTIFIER '[' expr ']'
+            | TK_IDENTIFIER '(' paramlist ')'
             | '(' expr ')'
             | expr '+' expr
             | expr '-' expr
@@ -115,17 +117,13 @@ cmdlist     : cmd cmdresto
             |
             ;
 
-cmd         : KW_READ LIT_CHAR
-            | KW_READ LIT_FLOAT
-            | KW_READ LIT_INTEGER
-            | KW_READ LIT_STRING
-            | KW_READ TK_IDENTIFIER
+cmd         : KW_READ TK_IDENTIFIER
             | KW_PRINT elemlist
             | KW_RETURN expr
-            | KW_IF '(' expr ')' KW_THEN cmdlist
-            | KW_IF '(' expr ')' KW_THEN cmdlist KW_ELSE cmdlist 
+            | KW_IF '(' expr ')' KW_THEN cmd
+            | KW_IF '(' expr ')' KW_THEN cmd KW_ELSE cmd 
             | KW_LEAP
-            | KW_LOOP '(' expr ')' block
+            | KW_LOOP '(' expr ')' cmd
             | block
             | atrib
             |
@@ -137,10 +135,8 @@ cmdresto    : ';' cmd cmdresto
 
 atrib       : TK_IDENTIFIER '=' expr
             | TK_IDENTIFIER '=' TK_IDENTIFIER '(' arglist ')'
-            | TK_IDENTIFIER '[' LIT_INTEGER ']' '=' expr
-            | TK_IDENTIFIER '[' TK_IDENTIFIER ']' '=' expr
-            | TK_IDENTIFIER '[' LIT_INTEGER ']' '=' TK_IDENTIFIER '(' arglist ')'
-            | TK_IDENTIFIER '[' TK_IDENTIFIER ']' '=' TK_IDENTIFIER '(' arglist ')'
+            | TK_IDENTIFIER '[' expr ']' '=' expr
+            | TK_IDENTIFIER '[' expr ']' '=' TK_IDENTIFIER '(' arglist ')'
             ;
 
 elemlist    : elem elemresto
