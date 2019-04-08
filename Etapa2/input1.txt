@@ -1,7 +1,7 @@
 ZZ UFRGS - Compiladores - Marcelo Johann - 2019/1
 
 byte a = O;
-byte 1 = O;
+byte 1 = I;
 int v [IO]: O O O O O O O O O O; 
 int mat [IO]; 
 float f = IO.EE;

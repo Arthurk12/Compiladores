@@ -17,8 +17,6 @@ int isRunning();
 int getLineNumber();
 
 int main(int argc, char** argv){
-	int tok = 0;
-	
 	initMe();
 
 	if(argc < 2){
@@ -30,12 +28,13 @@ int main(int argc, char** argv){
 		printf("Erro ao abrir o arquivo de entrada!");
 		exit(1);
 	}
-	int line = 0;
+
 	while(isRunning()){
 		yyparse();
-		printf("Programa Valido!");
+		printf("Programa Valido! \n");
 	}
 		
 	hashPrint();
+	exit(0);
 }
 
