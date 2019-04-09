@@ -95,7 +95,6 @@ expr        : LIT_INTEGER
             ;
 
 paramlist   : param resto
-            | %empty
             ;
 
 param       : KW_BYTE TK_IDENTIFIER 
