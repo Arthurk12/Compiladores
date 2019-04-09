@@ -16,7 +16,7 @@ hash.o: hash.c
 y.tab.o: y.tab.c
 	gcc -c y.tab.c -Wall
 y.tab.c: parser.y
-	bison -y -d parser.y -Wall
+	bison -y -d parser.y
 lex.yy.o: lex.yy.c
 	gcc -c lex.yy.c
 lex.yy.c: scanner.l
