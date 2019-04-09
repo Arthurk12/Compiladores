@@ -46,7 +46,7 @@ programa    : declist
             ;
 
 declist     : dec declist
-            | %empty
+            | 
             ;
 
 dec         : KW_BYTE TK_IDENTIFIER '=' val                             ';'
@@ -64,7 +64,7 @@ dec         : KW_BYTE TK_IDENTIFIER '=' val                             ';'
             ;
 
 inilist     : val inilist
-            | %empty
+            | 
             ;
 
 val         : LIT_INTEGER
@@ -100,11 +100,11 @@ paramlist   : param resto
 param       : KW_BYTE TK_IDENTIFIER 
             | KW_FLOAT TK_IDENTIFIER
             | KW_INT TK_IDENTIFIER
-            | %empty
+            | 
             ;
             
 resto       : ',' param resto
-            | %empty
+            | 
             ;
 
 
@@ -123,11 +123,11 @@ cmd         : KW_READ TK_IDENTIFIER
             | KW_LOOP '(' expr ')' cmd
             | block
             | atrib
-            | %empty
+            | 
             ;
 
 cmdresto    : ';' cmd cmdresto
-            | %empty
+            | 
             ;
 
 atrib       : TK_IDENTIFIER '=' expr
@@ -140,7 +140,7 @@ elemlist    : elem elemresto
             ;
 
 elemresto   : ',' elem elemresto
-            | %empty
+            | 
             ;
 
 elem        : expr
@@ -148,11 +148,11 @@ elem        : expr
             ;
 
 arglist     : arg argresto
-            | %empty
+            | 
             ;
 
 argresto    : ',' arg argresto
-            | %empty
+            | 
             ;
 
 arg         : LIT_INTEGER
