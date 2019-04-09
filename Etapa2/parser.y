@@ -39,7 +39,6 @@ int yylex();
 %left OPERATOR_AND
 %left '+' '-'
 %left '*' '/'
-%left '(' ')'
 
 %%
 
@@ -47,7 +46,7 @@ programa    : declist
             ;
 
 declist     : dec declist
-            |
+            | %empty
             ;
 
 dec         : KW_BYTE TK_IDENTIFIER '=' val                             ';'
@@ -65,7 +64,7 @@ dec         : KW_BYTE TK_IDENTIFIER '=' val                             ';'
             ;
 
 inilist     : val inilist
-            |
+            | %empty
             ;
 
 val         : LIT_INTEGER
@@ -96,17 +95,17 @@ expr        : LIT_INTEGER
             ;
 
 paramlist   : param resto
-            |
+            | %empty
             ;
 
 param       : KW_BYTE TK_IDENTIFIER 
             | KW_FLOAT TK_IDENTIFIER
             | KW_INT TK_IDENTIFIER
-            |
+            | %empty
             ;
             
 resto       : ',' param resto
-            |
+            | %empty
             ;
 
 
@@ -114,7 +113,6 @@ block       : '{' cmdlist '}'
             ;
 
 cmdlist     : cmd cmdresto
-            |
             ;
 
 cmd         : KW_READ TK_IDENTIFIER
@@ -126,11 +124,11 @@ cmd         : KW_READ TK_IDENTIFIER
             | KW_LOOP '(' expr ')' cmd
             | block
             | atrib
-            |
+            | %empty
             ;
 
 cmdresto    : ';' cmd cmdresto
-            |
+            | %empty
             ;
 
 atrib       : TK_IDENTIFIER '=' expr
@@ -143,7 +141,7 @@ elemlist    : elem elemresto
             ;
 
 elemresto   : ',' elem elemresto
-            |
+            | %empty
             ;
 
 elem        : expr
@@ -151,11 +149,11 @@ elem        : expr
             ;
 
 arglist     : arg argresto
-            |
+            | %empty
             ;
 
 argresto    : ',' arg argresto
-            |
+            | %empty
             ;
 
 arg         : LIT_INTEGER

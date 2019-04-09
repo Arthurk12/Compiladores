@@ -18,7 +18,7 @@ y.tab.o: y.tab.c
 y.tab.c: parser.y
 	bison -y -d parser.y -Wall
 lex.yy.o: lex.yy.c
-	gcc -c lex.yy.c -Wall
+	gcc -c lex.yy.c
 lex.yy.c: scanner.l
 	flex --header-file=lex.yy.h scanner.l 
 clean:
