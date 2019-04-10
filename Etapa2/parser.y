@@ -75,9 +75,10 @@ val         : LIT_INTEGER
 expr        : LIT_INTEGER
             | LIT_FLOAT
             | LIT_CHAR
+            | LIT_STRING
             | TK_IDENTIFIER
             | TK_IDENTIFIER '[' expr ']'
-            | TK_IDENTIFIER '(' paramlist ')'
+            | TK_IDENTIFIER '(' arglist ')'
             | '(' expr ')'
             | expr '+' expr
             | expr '-' expr
@@ -115,7 +116,7 @@ cmdlist     : cmd cmdresto
             ;
 
 cmd         : KW_READ TK_IDENTIFIER
-            | KW_PRINT elemlist
+            | KW_PRINT arglist
             | KW_RETURN expr
             | KW_IF '(' expr ')' KW_THEN cmd
             | KW_IF '(' expr ')' KW_THEN cmd KW_ELSE cmd 
@@ -131,36 +132,17 @@ cmdresto    : ';' cmd cmdresto
             ;
 
 atrib       : TK_IDENTIFIER '=' expr
-            | TK_IDENTIFIER '=' TK_IDENTIFIER '(' arglist ')'
             | TK_IDENTIFIER '[' expr ']' '=' expr
-            | TK_IDENTIFIER '[' expr ']' '=' TK_IDENTIFIER '(' arglist ')'
             ;
 
-elemlist    : elem elemresto
-            ;
-
-elemresto   : ',' elem elemresto
+arglist     : expr argresto
             | 
             ;
 
-elem        : expr
-            | LIT_STRING
-            ;
-
-arglist     : arg argresto
+argresto    : ',' expr argresto
             | 
             ;
 
-argresto    : ',' arg argresto
-            | 
-            ;
-
-arg         : LIT_INTEGER
-            | LIT_CHAR
-            | LIT_FLOAT
-            | LIT_STRING
-            | TK_IDENTIFIER
-            ;
 %%
 
 void yyerror(char *msg){

@@ -10,6 +10,8 @@ byte x = DE;
 
 byte main ()
   {
+  a=f(a+c,b,"batata");
+  
   a = C;
   v[a] = AO;
   print v[a];
