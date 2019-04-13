@@ -22,4 +22,4 @@ lex.yy.o: lex.yy.c
 lex.yy.c: scanner.l
 	flex --header-file=lex.yy.h scanner.l 
 clean:
-	rm *.o lex.yy.c lex.yy.h y.tab.c y.tab.h parser.tab.c parser.tab.h etapa2
+	rm *.o lex.yy.c lex.yy.h y.tab.c y.tab.h parser.tab.c parser.tab.h y.output etapa2
