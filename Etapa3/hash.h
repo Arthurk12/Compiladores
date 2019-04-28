@@ -10,11 +10,10 @@ IAN FISCHER SCHILLING - 00275603
 
 #define HASHSIZE 997
 
-typedef struct hashnode hashNode;
 typedef struct hashnode{
 	int type;	
 	char *lit;
-	hashNode *next;
+	struct hashnode *next;
 }hashNode;
 
 

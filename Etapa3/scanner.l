@@ -28,15 +28,15 @@ int LineNumber=1;
 "read"							return KW_READ;
 "print"							return KW_PRINT;
 "return"						return KW_RETURN;
-[OIHGFEDCBA]+					{hashInsert(LIT_INTEGER, yytext);return LIT_INTEGER;}
-[OIHGFEDCBA]+"."[OIHGFEDCBA]+	{hashInsert(LIT_FLOAT, yytext);return LIT_FLOAT;}
-"'"."'"							{hashInsert(LIT_CHAR, yytext);return LIT_CHAR;}
-\"(\\\"|[^\"\n])*\"				{hashInsert(LIT_STRING, yytext);return LIT_STRING;}
+[OIHGFEDCBA]+					{yylval.symbol = hashInsert(LIT_INTEGER, yytext);return LIT_INTEGER;}
+[OIHGFEDCBA]+"."[OIHGFEDCBA]+	{yylval.symbol = hashInsert(LIT_FLOAT, yytext);return LIT_FLOAT;}
+"'"."'"							{yylval.symbol = hashInsert(LIT_CHAR, yytext);return LIT_CHAR;}
+\"(\\\"|[^\"\n])*\"				{yylval.symbol = hashInsert(LIT_STRING, yytext);return LIT_STRING;}
 "<="							return OPERATOR_LE;
 ">="							return OPERATOR_GE;
 "=="							return OPERATOR_EQ;
 "!="							return OPERATOR_DIF;
-[a-z0-9_]+						{hashInsert(TK_IDENTIFIER, yytext);return TK_IDENTIFIER;}
+[a-z0-9_]+						{yylval.symbol = hashInsert(TK_IDENTIFIER, yytext);return TK_IDENTIFIER;}
 [,;(){}]						return yytext[0];
 "["|"]"							return yytext[0];
 ":"								return yytext[0];

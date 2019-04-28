@@ -2,11 +2,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "functions.h"
+#include "ast.h"
 
 void yyerror(char *msg);
 int yylex();
 
 %}
+
+%union{
+    struct hashnode *symbol;
+    struct astnode *ast;
+}
+
+
 
 %token KW_BYTE
 %token KW_INT
