@@ -5,8 +5,8 @@ IAN FISCHER SCHILLING - 00275603
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "hash.h"
 #include "functions.h"
+#include "ast.h"
 
 extern int yylex();
 extern int yyparse();

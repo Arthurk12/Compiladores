@@ -1,8 +1,9 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "functions.h"
 #include "ast.h"
+#include "functions.h"
+
 
 void yyerror(char *msg);
 int yylex();
@@ -14,19 +15,19 @@ int yylex();
     struct astnode *ast;
 }
 
-
+%type <ast> expr arglist argresto programa
 
 %token KW_BYTE
 %token KW_INT
 %token KW_FLOAT
-%token KW_IF
+%token KW_IF      
 %token KW_THEN
 %token KW_ELSE
 %token KW_LOOP
 %token KW_LEAP
-%token KW_READ
+%token KW_READ  
 %token KW_RETURN
-%token KW_PRINT
+%token KW_PRINT 
 %token OPERATOR_LE
 %token OPERATOR_GE
 %token OPERATOR_EQ
@@ -34,11 +35,11 @@ int yylex();
 %token OPERATOR_OR
 %token OPERATOR_AND
 %token OPERATOR_NOT
-%token TK_IDENTIFIER
-%token LIT_INTEGER
-%token LIT_FLOAT
-%token LIT_CHAR
-%token LIT_STRING
+%token <symbol> TK_IDENTIFIER
+%token <symbol> LIT_INTEGER
+%token <symbol> LIT_FLOAT  
+%token <symbol> LIT_CHAR 
+%token <symbol> LIT_STRING 
 %token TOKEN_ERROR
 
 %left OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_DIF OPERATOR_NOT '<' '>'
@@ -79,27 +80,27 @@ val         : LIT_INTEGER
             | LIT_CHAR
             ;
 
-expr        : LIT_INTEGER
-            | LIT_FLOAT
-            | LIT_CHAR
-            | LIT_STRING
-            | TK_IDENTIFIER
-            | TK_IDENTIFIER '[' expr ']'
-            | TK_IDENTIFIER '(' arglist ')'
-            | '(' expr ')'
-            | expr '+' expr
-            | expr '-' expr
-            | expr '*' expr
-            | expr '/' expr
-            | expr OPERATOR_AND expr
-            | expr OPERATOR_OR expr
-            | expr OPERATOR_DIF expr
-            | expr OPERATOR_EQ expr
-            | expr OPERATOR_GE expr
-            | expr OPERATOR_LE expr
-            | expr '>' expr
-            | expr '<' expr
-            | OPERATOR_NOT expr
+expr        : LIT_INTEGER                   {$$ = astCreate(AST_LIT_INTEGER, $1, 0, 0, 0, 0);}
+            | LIT_FLOAT                     {$$ = astCreate(AST_LIT_FLOAT, $1, 0, 0, 0, 0);}
+            | LIT_CHAR                      {$$ = astCreate(AST_LIT_CHAR, $1, 0, 0, 0, 0);}
+            | LIT_STRING                    {$$ = astCreate(AST_LIT_STRING, $1, 0, 0, 0, 0);}
+            | TK_IDENTIFIER                 {$$ = astCreate(AST_TK_IDENTIFIER, $1, 0, 0, 0, 0);}
+            | TK_IDENTIFIER '[' expr ']'    {$$ = astCreate(AST_VECTOR, $1, $3, 0, 0, 0);}
+            | TK_IDENTIFIER '(' arglist ')' {$$ = astCreate(AST_FUNCTION, $1, $3, 0, 0, 0);}
+            | '(' expr ')'                  {$$ = $2;}
+            | expr '+' expr                 {$$ = astCreate(AST_OP_ADD, 0, $1, $3, 0, 0);}
+            | expr '-' expr                 {$$ = astCreate(AST_OP_SUB, 0, $1, $3, 0, 0);}
+            | expr '*' expr                 {$$ = astCreate(AST_OP_MUL, 0, $1, $3, 0, 0);}
+            | expr '/' expr                 {$$ = astCreate(AST_OP_DIV, 0, $1, $3, 0, 0);}
+            | expr OPERATOR_AND expr        {$$ = astCreate(AST_OP_AND, 0, $1, $3, 0, 0);}
+            | expr OPERATOR_OR expr         {$$ = astCreate(AST_OP_OR, 0, $1, $3, 0, 0);}
+            | expr OPERATOR_DIF expr        {$$ = astCreate(AST_OP_DIF, 0, $1, $3, 0, 0);}
+            | expr OPERATOR_EQ expr         {$$ = astCreate(AST_OP_EQ, 0, $1, $3, 0, 0);}
+            | expr OPERATOR_GE expr         {$$ = astCreate(AST_OP_GE, 0, $1, $3, 0, 0);}
+            | expr OPERATOR_LE expr         {$$ = astCreate(AST_OP_LE, 0, $1, $3, 0, 0);}
+            | expr '>' expr                 {$$ = astCreate(AST_OP_GT, 0, $1, $3, 0, 0);}
+            | expr '<' expr                 {$$ = astCreate(AST_OP_LT, 0, $1, $3, 0, 0);}
+            | OPERATOR_NOT expr             {$$ = astCreate(AST_OP_NOT, 0, $2, 0, 0, 0);}
             ;
 
 paramlist   : param resto
@@ -125,7 +126,7 @@ cmdlist     : cmd cmdresto
 cmd         : KW_READ TK_IDENTIFIER
             | KW_PRINT arglist
             | KW_RETURN expr
-            | KW_IF '(' expr ')' KW_THEN cmd
+            | KW_IF '(' expr ')' KW_THEN cmd            {astPrint($3, 0);}
             | KW_IF '(' expr ')' KW_THEN cmd KW_ELSE cmd 
             | KW_LEAP
             | KW_LOOP '(' expr ')' cmd
@@ -142,12 +143,12 @@ atrib       : TK_IDENTIFIER '=' expr
             | TK_IDENTIFIER '[' expr ']' '=' expr
             ;
 
-arglist     : expr argresto
-            | 
+arglist     : expr argresto         {$$ = $1;}
+            |                       {$$ = 0;}
             ;
 
-argresto    : ',' expr argresto
-            | 
+argresto    : ',' expr argresto     {$$ = $2;}
+            |                       {$$ = 0;}
             ;
 
 %%

@@ -50,3 +50,15 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Lex and Yacc Generated Files (prevent pushing unecessary files if "make clean" command was forgotten)
+y.tab.c
+y.tab.h
+y.output
+lex.yy.h
+lex.yy.c
+etapa3
+
+# vscode boring files
+
+.vscode/*
