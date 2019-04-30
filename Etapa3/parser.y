@@ -15,7 +15,7 @@ int yylex();
     struct astnode *ast;
 }
 
-%type <ast> expr arglist argresto programa
+%type <ast> expr arglist argresto programa declist dec val inilist paramlist param resto block
 
 %token KW_BYTE
 %token KW_INT
@@ -39,45 +39,47 @@ int yylex();
 %token <symbol> LIT_INTEGER
 %token <symbol> LIT_FLOAT  
 %token <symbol> LIT_CHAR 
-%token <symbol> LIT_STRING 
+%token <symbol> LIT_STRING
 %token TOKEN_ERROR
 
-%left OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_DIF OPERATOR_NOT '<' '>'
+
 %left OPERATOR_OR
 %left OPERATOR_AND
+%left OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_DIF OPERATOR_NOT '<' '>'
 %left '+' '-'
 %left '*' '/'
+%left '(' ')'
 
 %%
 
-programa    : declist
+programa    : declist                                                       {$$ = $1;astPrint($1, 0);}
             ;
 
-declist     : dec declist
-            | 
+declist     : dec declist                                                   {$$ = astCreate(AST_DECLIST, 0, $1, $2, 0, 0);}
+            |                                                               {$$ = 0;}
             ;
 
-dec         : KW_BYTE TK_IDENTIFIER '=' val                             ';'
-            | KW_BYTE TK_IDENTIFIER '[' LIT_INTEGER ']'                 ';'
-            | KW_BYTE TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist     ';'
-            | KW_BYTE TK_IDENTIFIER '(' paramlist ')' block             ';'
-            | KW_INT TK_IDENTIFIER '=' val                              ';'
-            | KW_INT TK_IDENTIFIER '[' LIT_INTEGER ']'                  ';'
-            | KW_INT TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist      ';'
-            | KW_INT TK_IDENTIFIER '(' paramlist ')' block              ';'
-            | KW_FLOAT TK_IDENTIFIER '=' val                            ';'
-            | KW_FLOAT TK_IDENTIFIER '[' LIT_INTEGER ']'                ';'
-            | KW_FLOAT TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist    ';'
-            | KW_FLOAT TK_IDENTIFIER '(' paramlist ')' block            ';'
+dec         : KW_BYTE TK_IDENTIFIER '=' val                             ';' {$$ = astCreate(AST_VAR_DECLARATION, $2, astCreate(AST_DATATYPE_BYTE, 0, 0, 0, 0, 0), $4, 0, 0);}
+            | KW_BYTE TK_IDENTIFIER '[' LIT_INTEGER ']'                 ';' {$$ = astCreate(AST_VEC_DECLARATION, $2, astCreate(AST_DATATYPE_BYTE, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), 0, 0);}
+            | KW_BYTE TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist     ';' {$$ = astCreate(AST_VEC_DECLARATION, $2, astCreate(AST_DATATYPE_BYTE, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), $7, 0);}
+            | KW_BYTE TK_IDENTIFIER '(' paramlist ')' block             ';' {$$ = astCreate(AST_FUNC_DECLARATION, $2, astCreate(AST_DATATYPE_BYTE, 0, 0, 0, 0, 0), $4, $6, 0);}
+            | KW_INT TK_IDENTIFIER '=' val                              ';' {$$ = astCreate(AST_VAR_DECLARATION, $2, astCreate(AST_DATATYPE_INT, 0, 0, 0, 0, 0), $4, 0, 0);}
+            | KW_INT TK_IDENTIFIER '[' LIT_INTEGER ']'                  ';' {$$ = astCreate(AST_VEC_DECLARATION, $2, astCreate(AST_DATATYPE_INT, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), 0, 0);}
+            | KW_INT TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist      ';' {$$ = astCreate(AST_VEC_DECLARATION, $2, astCreate(AST_DATATYPE_INT, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), $7, 0);}
+            | KW_INT TK_IDENTIFIER '(' paramlist ')' block              ';' {$$ = astCreate(AST_FUNC_DECLARATION, $2, astCreate(AST_DATATYPE_INT, 0, 0, 0, 0, 0), $4, $6, 0);}
+            | KW_FLOAT TK_IDENTIFIER '=' val                            ';' {$$ = astCreate(AST_VAR_DECLARATION, $2, astCreate(AST_DATATYPE_FLOAT, 0, 0, 0, 0, 0), $4, 0, 0);}
+            | KW_FLOAT TK_IDENTIFIER '[' LIT_INTEGER ']'                ';' {$$ = astCreate(AST_VEC_DECLARATION, $2, astCreate(AST_DATATYPE_FLOAT, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), 0, 0);}
+            | KW_FLOAT TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist    ';' {$$ = astCreate(AST_VEC_DECLARATION, $2, astCreate(AST_DATATYPE_FLOAT, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), $7, 0);}
+            | KW_FLOAT TK_IDENTIFIER '(' paramlist ')' block            ';' {$$ = astCreate(AST_FUNC_DECLARATION, $2, astCreate(AST_DATATYPE_FLOAT, 0, 0, 0, 0, 0), $4, $6, 0);}
             ;
 
-inilist     : val inilist
-            | 
+inilist     : val inilist                   {$$ = astCreate(AST_INILIST, 0, $1, $2, 0, 0);}
+            |                               {$$ = 0;}
             ;
 
-val         : LIT_INTEGER
-            | LIT_FLOAT
-            | LIT_CHAR
+val         : LIT_INTEGER                   {$$ = astCreate(AST_LIT_INTEGER, $1, 0, 0, 0, 0);}
+            | LIT_FLOAT                     {$$ = astCreate(AST_LIT_FLOAT, $1, 0, 0, 0, 0);}
+            | LIT_CHAR                      {$$ = astCreate(AST_LIT_CHAR, $1, 0, 0, 0, 0);}
             ;
 
 expr        : LIT_INTEGER                   {$$ = astCreate(AST_LIT_INTEGER, $1, 0, 0, 0, 0);}
@@ -103,21 +105,21 @@ expr        : LIT_INTEGER                   {$$ = astCreate(AST_LIT_INTEGER, $1,
             | OPERATOR_NOT expr             {$$ = astCreate(AST_OP_NOT, 0, $2, 0, 0, 0);}
             ;
 
-paramlist   : param resto
+paramlist   : param resto                   {$$ = astCreate(AST_FUNC_PARAMLIST, 0, $1, $2, 0, 0);}
             ;
 
-param       : KW_BYTE TK_IDENTIFIER 
-            | KW_FLOAT TK_IDENTIFIER
-            | KW_INT TK_IDENTIFIER
-            | 
+param       : KW_BYTE TK_IDENTIFIER         {$$ = astCreate(AST_FUNC_PARAM, $2, astCreate(AST_DATATYPE_BYTE, 0, 0, 0, 0, 0), 0, 0, 0);}
+            | KW_FLOAT TK_IDENTIFIER        {$$ = astCreate(AST_FUNC_PARAM, $2, astCreate(AST_DATATYPE_FLOAT, 0, 0, 0, 0, 0), 0, 0, 0);}
+            | KW_INT TK_IDENTIFIER          {$$ = astCreate(AST_FUNC_PARAM, $2, astCreate(AST_DATATYPE_INT, 0, 0, 0, 0, 0), 0, 0, 0);}
+            |                               {$$ = 0;}
             ;
             
-resto       : ',' param resto
-            | 
+resto       : ',' param resto               {$$ = $2;}
+            |                               {$$ = 0;}
             ;
 
 
-block       : '{' cmdlist '}'
+block       : '{' cmdlist '}'               {$$ = 0;}
             ;
 
 cmdlist     : cmd cmdresto
@@ -126,8 +128,8 @@ cmdlist     : cmd cmdresto
 cmd         : KW_READ TK_IDENTIFIER
             | KW_PRINT arglist
             | KW_RETURN expr
-            | KW_IF '(' expr ')' KW_THEN cmd            {astPrint($3, 0);}
-            | KW_IF '(' expr ')' KW_THEN cmd KW_ELSE cmd 
+            | KW_IF '(' expr ')' KW_THEN cmd
+            | KW_IF '(' expr ')' KW_THEN cmd KW_ELSE cmd
             | KW_LEAP
             | KW_LOOP '(' expr ')' cmd
             | block

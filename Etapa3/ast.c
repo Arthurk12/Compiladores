@@ -16,54 +16,75 @@ AST *astCreate(int type, hashNode *symbol_node, AST *s0, AST *s1, AST *s2, AST *
 void astPrint(AST *node, int level){
 
     int i;
-    if(!node)return;
-    for(i=0; i<=level; i++)
-        fprintf(stderr, " ");
+    if(node == 0)return;
+
+    for(i=0; i<=level; i++){
+        fprintf(stderr, "  ");
+    }
+
     fprintf(stderr, "AST(");
     switch(node->type){
-        case AST_OP_EQUAL:  fprintf(stderr, "AST_OP_EQUAL, \n");
+        case AST_OP_EQUAL:  fprintf(stderr, "AST_OP_EQUAL) \n");
                         break;
-        case AST_OP_ADD:    fprintf(stderr, "AST_ADD, \n");
+        case AST_OP_ADD:    fprintf(stderr, "AST_ADD) \n");
                         break;
-        case AST_OP_SUB:    fprintf(stderr, "AST_SUB, \n");
+        case AST_OP_SUB:    fprintf(stderr, "AST_SUB) \n");
                         break;
-        case AST_OP_MUL:    fprintf(stderr, "AST_MUL, \n");
+        case AST_OP_MUL:    fprintf(stderr, "AST_MUL) \n");
                         break;
-        case AST_OP_DIV:    fprintf(stderr, "AST_DIV, \n");
+        case AST_OP_DIV:    fprintf(stderr, "AST_DIV) \n");
                         break;
-        case AST_OP_AND:    fprintf(stderr, "AST_AND, \n");
+        case AST_OP_AND:    fprintf(stderr, "AST_AND) \n");
                         break;
-        case AST_OP_OR:    fprintf(stderr, "AST_OR, \n");
+        case AST_OP_OR:     fprintf(stderr, "AST_OR) \n");
                         break;
-        case AST_OP_DIF:    fprintf(stderr, "AST_DIF, \n");
+        case AST_OP_DIF:    fprintf(stderr, "AST_DIF) \n");
                         break;
-        case AST_OP_EQ:    fprintf(stderr, "AST_EQ, \n");
+        case AST_OP_EQ:     fprintf(stderr, "AST_EQ) \n");
                         break;
-        case AST_OP_GE:    fprintf(stderr, "AST_GE, \n");
+        case AST_OP_GE:     fprintf(stderr, "AST_GE) \n");
                         break;
-        case AST_OP_LE:    fprintf(stderr, "AST_LE, \n");
+        case AST_OP_LE:     fprintf(stderr, "AST_LE) \n");
                         break;
-        case AST_OP_GT:    fprintf(stderr, "AST_GT, \n");
+        case AST_OP_GT:     fprintf(stderr, "AST_GT) \n");
                         break;
-        case AST_OP_LT:    fprintf(stderr, "AST_LT, \n");
+        case AST_OP_LT:     fprintf(stderr, "AST_LT) \n");
                         break;
-        case AST_OP_NOT:    fprintf(stderr, "AST_NOT, \n");
+        case AST_OP_NOT:    fprintf(stderr, "AST_NOT) \n");
                         break;
-        case AST_LIT_INTEGER: fprintf(stderr, "AST_INTEGER, \n");
+        case AST_LIT_INTEGER:   fprintf(stderr, "AST_INTEGER) \n");
                         break;
-        case AST_LIT_FLOAT:fprintf(stderr, "AST_FLOAT, \n");
+        case AST_LIT_FLOAT:     fprintf(stderr, "AST_FLOAT) \n");
                         break;
-        case AST_LIT_CHAR:fprintf(stderr, "AST_CHAR, \n");
+        case AST_LIT_CHAR:      fprintf(stderr, "AST_CHAR) \n");
                         break;
-        case AST_LIT_STRING:fprintf(stderr, "AST_STRING, \n");
+        case AST_LIT_STRING:    fprintf(stderr, "AST_STRING) \n");
                         break;
-        case AST_TK_IDENTIFIER:fprintf(stderr, "AST_IDENTIFIER, \n");
+        case AST_TK_IDENTIFIER: fprintf(stderr, "AST_IDENTIFIER) \n");
                         break;
-        case AST_VECTOR:fprintf(stderr, "AST_VECTOR, \n");
+        case AST_VECTOR:        fprintf(stderr, "AST_VECTOR) \n");
                         break;
-        case AST_FUNCTION:fprintf(stderr, "AST_FUNCTION, \n");
+        case AST_FUNCTION:      fprintf(stderr, "AST_FUNCTION) \n");
+                        break;        
+        case AST_VAR_DECLARATION:       fprintf(stderr, "AST_VAR_DECLARATION) \n");
+                        break;        
+        case AST_VEC_DECLARATION:       fprintf(stderr, "AST_VEC_DECLARATION) \n");
+                        break;        
+        case AST_FUNC_DECLARATION:      fprintf(stderr, "AST_FUNC_DECLARATION) \n");
                         break;
-        default:            fprintf(stderr, "AST_UNKNOWN, \n");
+        case AST_DATATYPE_BYTE:         fprintf(stderr, "AST_DATATYPE_BYTE) \n");
+                        break;
+        case AST_DATATYPE_FLOAT:        fprintf(stderr, "AST_DATATYPE_FLOAT) \n");
+                        break;
+        case AST_DATATYPE_INT:          fprintf(stderr, "AST_DATATYPE_INT) \n");
+                        break;
+        case AST_FUNC_PARAM:            fprintf(stderr, "AST_FUNC_PARAM) \n");
+                        break;
+        case AST_DECLIST:               fprintf(stderr, "AST_DECLIST) \n");
+                        break;
+        case AST_FUNC_PARAMLIST:        fprintf(stderr, "AST_FUNC_PARAMLIST) \n");
+                        break;
+        default:                        fprintf(stderr, "AST_UNKNOWN) %d \n", node->type);
                         break;
     }
 
@@ -71,4 +92,5 @@ void astPrint(AST *node, int level){
 
     for(i=0; i<MAX_SONS; i++)
         astPrint(node->son[i], level);
+    
 }
