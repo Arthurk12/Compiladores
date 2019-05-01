@@ -52,7 +52,7 @@ int yylex();
 
 %%
 
-programa    : declist                                                       {$$ = $1;astPrint($1, 0);}
+programa    : declist                                                       {$$ = $1;astPrint($1, 0); initFile($1);}
             ;
 
 declist     : dec declist                                                   {$$ = astCreate(AST_DECLIST, 0, $1, $2, 0, 0);}
@@ -61,15 +61,15 @@ declist     : dec declist                                                   {$$ 
 
 dec         : KW_BYTE TK_IDENTIFIER '=' val                             ';' {$$ = astCreate(AST_VAR_DECLARATION, $2, astCreate(AST_DATATYPE_BYTE, 0, 0, 0, 0, 0), $4, 0, 0);}
             | KW_BYTE TK_IDENTIFIER '[' LIT_INTEGER ']'                 ';' {$$ = astCreate(AST_VEC_DECLARATION, $2, astCreate(AST_DATATYPE_BYTE, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), 0, 0);}
-            | KW_BYTE TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist     ';' {$$ = astCreate(AST_VEC_DECLARATION, $2, astCreate(AST_DATATYPE_BYTE, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), $7, 0);}
+            | KW_BYTE TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist     ';' {$$ = astCreate(AST_VEC_DECLARATION_INI, $2, astCreate(AST_DATATYPE_BYTE, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), $7, 0);}
             | KW_BYTE TK_IDENTIFIER '(' paramlist ')' block             ';' {$$ = astCreate(AST_FUNC_DECLARATION, $2, astCreate(AST_DATATYPE_BYTE, 0, 0, 0, 0, 0), $4, $6, 0);}
             | KW_INT TK_IDENTIFIER '=' val                              ';' {$$ = astCreate(AST_VAR_DECLARATION, $2, astCreate(AST_DATATYPE_INT, 0, 0, 0, 0, 0), $4, 0, 0);}
             | KW_INT TK_IDENTIFIER '[' LIT_INTEGER ']'                  ';' {$$ = astCreate(AST_VEC_DECLARATION, $2, astCreate(AST_DATATYPE_INT, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), 0, 0);}
-            | KW_INT TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist      ';' {$$ = astCreate(AST_VEC_DECLARATION, $2, astCreate(AST_DATATYPE_INT, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), $7, 0);}
+            | KW_INT TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist      ';' {$$ = astCreate(AST_VEC_DECLARATION_INI, $2, astCreate(AST_DATATYPE_INT, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), $7, 0);}
             | KW_INT TK_IDENTIFIER '(' paramlist ')' block              ';' {$$ = astCreate(AST_FUNC_DECLARATION, $2, astCreate(AST_DATATYPE_INT, 0, 0, 0, 0, 0), $4, $6, 0);}
             | KW_FLOAT TK_IDENTIFIER '=' val                            ';' {$$ = astCreate(AST_VAR_DECLARATION, $2, astCreate(AST_DATATYPE_FLOAT, 0, 0, 0, 0, 0), $4, 0, 0);}
             | KW_FLOAT TK_IDENTIFIER '[' LIT_INTEGER ']'                ';' {$$ = astCreate(AST_VEC_DECLARATION, $2, astCreate(AST_DATATYPE_FLOAT, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), 0, 0);}
-            | KW_FLOAT TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist    ';' {$$ = astCreate(AST_VEC_DECLARATION, $2, astCreate(AST_DATATYPE_FLOAT, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), $7, 0);}
+            | KW_FLOAT TK_IDENTIFIER '[' LIT_INTEGER ']' ':' inilist    ';' {$$ = astCreate(AST_VEC_DECLARATION_INI, $2, astCreate(AST_DATATYPE_FLOAT, 0, 0, 0, 0, 0), astCreate(AST_LIT_INTEGER, $4, 0, 0, 0, 0), $7, 0);}
             | KW_FLOAT TK_IDENTIFIER '(' paramlist ')' block            ';' {$$ = astCreate(AST_FUNC_DECLARATION, $2, astCreate(AST_DATATYPE_FLOAT, 0, 0, 0, 0, 0), $4, $6, 0);}
             ;
 

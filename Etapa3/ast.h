@@ -16,6 +16,11 @@ typedef struct astnode{
     struct astnode* son[MAX_SONS];
 } AST;
 
+
+
 AST *astCreate(int type, hashNode *symbol_node, AST *s0, AST *s1, AST *s2, AST *s3);
 void astPrint(AST *node, int level);
+void compile(AST *node, FILE *out);
+void initFile(AST *node);
+void closeFile(FILE *code);
 

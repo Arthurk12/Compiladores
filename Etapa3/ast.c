@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <string.h>
+#include <time.h>
+
 #include "ast.h"
 
 AST *astCreate(int type, hashNode *symbol_node, AST *s0, AST *s1, AST *s2, AST *s3){
@@ -125,4 +128,263 @@ void astPrint(AST *node, int level){
     for(i=0; i<MAX_SONS; i++)
         astPrint(node->son[i], level);
     
+}
+
+void compile(AST *node, FILE *out) {
+
+	AST *temp = node;
+	if (temp == 0) return;
+
+	switch(temp->type) {
+		case AST_DECLIST:
+			                compile(temp->son[0], out);
+			                compile(temp->son[1], out);
+			            break;
+		
+		case AST_VAR_DECLARATION: 
+			                compile(temp->son[0], out);
+			                fprintf(out,"%s = ", temp->symbol->lit);
+			                compile(temp->son[1], out);
+			                fprintf(out, ";\n");
+			            break;
+		case AST_VEC_DECLARATION: 
+			                compile(temp->son[0], out);
+			                fprintf(out,"%s ", temp->symbol->lit);
+			                fprintf(out, "[");
+			                compile(temp->son[1], out);
+			                fprintf(out, "];\n");
+			            break;
+		case AST_VEC_DECLARATION_INI: 
+			                compile(temp->son[0], out);
+			                fprintf(out,"%s ", temp->symbol->lit);
+			                fprintf(out, "[");
+			                compile(temp->son[1], out);
+			                fprintf(out, "]: ");
+			                compile(temp->son[2], out);
+			                fprintf(out, ";\n");
+			            break;
+		case AST_DATATYPE_BYTE: 
+			                fprintf(out,"byte ");
+			            break;
+        case AST_DATATYPE_INT: 
+			                fprintf(out,"int ");
+			            break;
+		case AST_DATATYPE_FLOAT: 
+			                fprintf(out,"float ");
+			            break;		
+		case AST_INILIST: 
+			                compile(temp->son[0], out);
+			                fprintf(out," ");
+			                compile(temp->son[1], out);
+			            break;
+		case AST_LIT_INTEGER: 
+			                fprintf(out,"%s", temp->symbol->lit);
+			            break;
+		case AST_LIT_FLOAT: 
+			                fprintf(out,"%s", temp->symbol->lit);
+			            break;
+		case AST_LIT_CHAR: 
+			                fprintf(out,"'%s'", temp->symbol->lit);
+			            break;
+        case AST_LIT_STRING:
+                            fprintf(out ,"\"%s\"", temp->symbol->lit);
+                        break;
+        case AST_TK_IDENTIFIER:
+                            fprintf(out, "%s", temp->symbol->lit);
+                        break;
+		case AST_FUNC_DECLARATION: 
+			                compile(temp->son[0], out);
+			                fprintf(out,"%s ", temp->symbol->lit);
+			                fprintf(out, "(");
+			                compile(temp->son[1], out);
+			                fprintf(out, ")");
+			                compile(temp->son[2], out);
+			            break;
+		case AST_FUNC_PARAMLIST: 
+			                compile(temp->son[0], out);
+			                compile(temp->son[1], out);
+			            break;
+        case AST_PARAMRESTO: 
+                            fprintf(out, ", ");
+                            compile(temp->son[0], out);
+                            compile(temp->son[1], out);
+                        break;
+		case AST_FUNC_PARAM:
+		 	                compile(temp->son[0], out);
+			                fprintf(out,"%s ", temp->symbol->lit);
+			            break;
+        case AST_BLOCK: 
+			                fprintf(out, "{\n");
+			                compile(temp->son[0], out);
+			                fprintf(out, "\n};");
+			            break;
+		case AST_CMDLIST: 
+                            if(temp->son[0] != 0){
+                                compile(temp->son[0], out);
+                            }
+                            compile(temp->son[1], out);
+			            break;
+		case AST_CMDRESTO: 
+			                if( temp->son[0] != 0){
+				                fprintf(out, ";\n");
+                                compile(temp->son[0], out);
+			                }
+                            compile(temp->son[1], out);
+			            break;
+        case AST_CMD_READ: 
+			                fprintf(out, "read ");
+			                fprintf(out,"%s", node->symbol->lit);		
+			            break;
+        case AST_CMD_PRINT: 
+			                fprintf(out, "print ");
+                            compile(temp->son[0], out);	
+			            break;
+		case AST_CMD_RETURN:
+			                fprintf(out,"return ");
+                            compile(temp->son[0], out);
+			            break;
+		case AST_CMD_IF: 
+			                fprintf(out, "if( ");
+			                compile(temp->son[0], out);
+                            fprintf(out, " ) then \n");
+                            compile(temp->son[1], out);
+                        break;
+		case AST_CMD_IF_ELSE: 
+			                fprintf(out, "if( ");
+			                compile(temp->son[0], out);
+                            fprintf(out, " ) then \n");
+                            compile(temp->son[1], out);
+                            fprintf(out, " else \n");
+                            compile(temp->son[2], out);
+			            break;
+        case AST_CMD_LEAP:
+                            fprintf(out, "leap \n");
+                        break;
+        case AST_CMD_LOOP:
+                            fprintf(out, "loop( ");
+                            compile(temp->son[0], out);
+                            fprintf(out, ") \n");
+                            compile(temp->son[1], out);
+                        break;
+        case AST_ATRIB:
+                            fprintf(out, "%s = ", temp->symbol->lit);
+                            compile(temp->son[0], out);
+                        break;
+        case AST_VEC_POS_ATRIB:
+                            fprintf(out, "%s [", temp->symbol->lit);
+                            compile(temp->son[0], out);
+                            fprintf(out, "] = ");
+                            compile(temp->son[1], out);
+                        break;
+        case AST_ARGLIST:
+                            compile(temp->son[0], out);
+                            compile(temp->son[1], out);
+                        break;
+        case AST_ARGRESTO:
+                            fprintf(out, ", ");
+                            compile(temp->son[0], out);
+                            compile(temp->son[1], out);
+                        break;
+        case AST_VECTOR:
+                            fprintf(out, "%s [", temp->symbol->lit);
+                            compile(temp->son[0], out);
+                            fprintf(out, "]");
+                        break;
+        case AST_FUNCTION:
+                            fprintf(out, "%s (", temp->symbol->lit);
+                            compile(temp->son[0], out);
+                            fprintf(out, ")");
+                        break;
+		case AST_OP_ADD: 
+			                compile(temp->son[0], out);
+			                fprintf(out, " + ");
+			                compile(temp->son[1], out);
+			            break;
+        case AST_OP_SUB: 
+			                compile(temp->son[0], out);
+			                fprintf(out, " - ");
+			                compile(temp->son[1], out);
+			            break;
+        case AST_OP_MUL: 
+			                compile(temp->son[0], out);
+			                fprintf(out, " * ");
+			                compile(temp->son[1], out);
+		                break;
+		case AST_OP_DIV: 
+			                compile(temp->son[0], out);
+			                fprintf(out, " / ");
+			                compile(temp->son[1], out);
+			            break;
+		case AST_OP_AND: 
+			                compile(temp->son[0], out);
+			                fprintf(out, " and ");
+			                compile(temp->son[1], out);
+			            break;
+		case AST_OP_OR: 
+			                compile(temp->son[0], out);
+			                fprintf(out, " or ");
+			                compile(temp->son[1], out);
+			            break;
+		case AST_OP_DIF: 
+			                compile(temp->son[0], out);
+			                fprintf(out, " != ");
+			                compile(temp->son[1], out);
+			            break;
+		case AST_OP_EQ: 
+			                compile(temp->son[0], out);
+			                fprintf(out, " == ");
+			                compile(temp->son[1], out);
+			            break;
+		case AST_OP_GE: 
+                            fprintf(out, ">= ");
+                            compile(temp->son[0], out);
+			            break;
+		case AST_OP_LE: 
+			                compile(temp->son[0], out);
+			                fprintf(out, " <= ");
+			                compile(temp->son[1], out);			
+			            break;
+		case AST_OP_GT: 
+			                compile(temp->son[0], out);
+			                fprintf(out, " > ");
+			                compile(temp->son[1], out);
+			            break;
+		case AST_OP_LT: 
+			                compile(temp->son[0], out);
+			                fprintf(out, " < ");
+			                compile(temp->son[1], out);
+                        break;
+		case AST_OP_NOT: 
+			                compile(temp->son[0], out);
+			                fprintf(out, "not ");
+			                compile(temp->son[1], out);
+			            break;
+		default: 
+            fprintf(stderr, "AST_UNKNOWN(%s)\n", temp->symbol->lit); 
+            break;
+	}
+}
+
+void initFile(AST *node){
+    FILE *code;
+    time_t raw;
+    char title[40] = "Code";
+    char sec[3];
+    struct tm * timeinfo;
+
+    time (&raw);
+    timeinfo = localtime (&raw);
+
+    strncpy(sec, &asctime(timeinfo)[17],2*sizeof(char));
+
+    strcat(title, sec);
+    strcat(title, ".txt");
+
+    code = fopen(title, "w+");
+    compile(node, code);
+    closeFile(code);
+}
+
+void closeFile(FILE *code){
+    fclose(code);
 }

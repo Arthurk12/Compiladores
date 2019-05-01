@@ -44,3 +44,4 @@
 #define AST_ARGRESTO            44
 #define AST_ARGLIST             45
 #define AST_PARAMRESTO          46
+#define AST_VEC_DECLARATION_INI 47
