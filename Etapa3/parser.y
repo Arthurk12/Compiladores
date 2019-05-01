@@ -15,7 +15,7 @@ int yylex();
     struct astnode *ast;
 }
 
-%type <ast> expr arglist argresto programa declist dec val inilist paramlist param resto block
+%type <ast> expr arglist argresto programa declist dec val inilist paramlist param paramresto block cmdlist cmd cmdresto atrib
 
 %token KW_BYTE
 %token KW_INT
@@ -105,7 +105,7 @@ expr        : LIT_INTEGER                   {$$ = astCreate(AST_LIT_INTEGER, $1,
             | OPERATOR_NOT expr             {$$ = astCreate(AST_OP_NOT, 0, $2, 0, 0, 0);}
             ;
 
-paramlist   : param resto                   {$$ = astCreate(AST_FUNC_PARAMLIST, 0, $1, $2, 0, 0);}
+paramlist   : param paramresto              {$$ = astCreate(AST_FUNC_PARAMLIST, 0, $1, $2, 0, 0);}
             ;
 
 param       : KW_BYTE TK_IDENTIFIER         {$$ = astCreate(AST_FUNC_PARAM, $2, astCreate(AST_DATATYPE_BYTE, 0, 0, 0, 0, 0), 0, 0, 0);}
@@ -114,43 +114,43 @@ param       : KW_BYTE TK_IDENTIFIER         {$$ = astCreate(AST_FUNC_PARAM, $2, 
             |                               {$$ = 0;}
             ;
             
-resto       : ',' param resto               {$$ = $2;}
+paramresto  : ',' param paramresto          {$$ = astCreate(AST_PARAMRESTO, 0, $2, $3, 0, 0);}
             |                               {$$ = 0;}
             ;
 
 
-block       : '{' cmdlist '}'               {$$ = 0;}
+block       : '{' cmdlist '}'               {$$ = astCreate(AST_BLOCK, 0, $2, 0, 0, 0);}
             ;
 
-cmdlist     : cmd cmdresto
+cmdlist     : cmd cmdresto                  {$$ = astCreate(AST_CMDLIST, 0, $1, $2, 0, 0);}
             ;
 
-cmd         : KW_READ TK_IDENTIFIER
-            | KW_PRINT arglist
-            | KW_RETURN expr
-            | KW_IF '(' expr ')' KW_THEN cmd
-            | KW_IF '(' expr ')' KW_THEN cmd KW_ELSE cmd
-            | KW_LEAP
-            | KW_LOOP '(' expr ')' cmd
-            | block
-            | atrib
-            | 
+cmd         : KW_READ TK_IDENTIFIER                         {$$ = astCreate(AST_CMD_READ, $2, 0, 0, 0, 0);}
+            | KW_PRINT arglist                              {$$ = astCreate(AST_CMD_PRINT, 0, $2, 0, 0, 0);}
+            | KW_RETURN expr                                {$$ = astCreate(AST_CMD_RETURN, 0, $2, 0, 0, 0);}
+            | KW_IF '(' expr ')' KW_THEN cmd                {$$ = astCreate(AST_CMD_IF, 0, $3, $6, 0, 0);}
+            | KW_IF '(' expr ')' KW_THEN cmd KW_ELSE cmd    {$$ = astCreate(AST_CMD_IF_ELSE, 0, $3, $6, $8, 0);}
+            | KW_LEAP                                       {$$ = astCreate(AST_CMD_LEAP, 0, 0, 0, 0, 0);}
+            | KW_LOOP '(' expr ')' cmd                      {$$ = astCreate(AST_CMD_LOOP, 0, $3, $5, 0, 0);}
+            | block                                         {$$ = $1;}
+            | atrib                                         {$$ = $1;}    
+            |                                               {$$ = 0;}
             ;
 
-cmdresto    : ';' cmd cmdresto
-            | 
+cmdresto    : ';' cmd cmdresto                              {$$ = astCreate(AST_CMDRESTO, 0, $2, $3, 0, 0);}
+            |                                               {$$ = 0;}
             ;
 
-atrib       : TK_IDENTIFIER '=' expr
-            | TK_IDENTIFIER '[' expr ']' '=' expr
+atrib       : TK_IDENTIFIER '=' expr                        {$$ = astCreate(AST_ATRIB, $1, $3, 0, 0, 0);}
+            | TK_IDENTIFIER '[' expr ']' '=' expr           {$$ = astCreate(AST_VEC_POS_ATRIB, $1, $3, $6, 0, 0);}
             ;
 
-arglist     : expr argresto         {$$ = $1;}
-            |                       {$$ = 0;}
+arglist     : expr argresto                                 {$$ = astCreate(AST_ARGLIST, 0, $1, $2, 0, 0);}
+            |                                               {$$ = 0;}
             ;
 
-argresto    : ',' expr argresto     {$$ = $2;}
-            |                       {$$ = 0;}
+argresto    : ',' expr argresto                             {$$ = astCreate(AST_ARGRESTO, 0, $2, $3, 0, 0);}
+            |                                               {$$ = 0;}
             ;
 
 %%
