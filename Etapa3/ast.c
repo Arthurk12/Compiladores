@@ -130,37 +130,37 @@ void astPrint(AST *node, int level){
     
 }
 
-void compile(AST *node, FILE *out) {
+void generateSource(AST *node, FILE *out) {
 
 	AST *temp = node;
 	if (temp == 0) return;
 
 	switch(temp->type) {
 		case AST_DECLIST:
-			                compile(temp->son[0], out);
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[0], out);
+			                generateSource(temp->son[1], out);
 			            break;
 		
 		case AST_VAR_DECLARATION: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out,"%s = ", temp->symbol->lit);
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			                fprintf(out, ";\n");
 			            break;
 		case AST_VEC_DECLARATION: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out,"%s ", temp->symbol->lit);
 			                fprintf(out, "[");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			                fprintf(out, "];\n");
 			            break;
 		case AST_VEC_DECLARATION_INI: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out,"%s ", temp->symbol->lit);
 			                fprintf(out, "[");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			                fprintf(out, "]: ");
-			                compile(temp->son[2], out);
+			                generateSource(temp->son[2], out);
 			                fprintf(out, ";\n");
 			            break;
 		case AST_DATATYPE_BYTE: 
@@ -173,9 +173,9 @@ void compile(AST *node, FILE *out) {
 			                fprintf(out,"float ");
 			            break;		
 		case AST_INILIST: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out," ");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			            break;
 		case AST_LIT_INTEGER: 
 			                fprintf(out,"%s", temp->symbol->lit);
@@ -193,43 +193,43 @@ void compile(AST *node, FILE *out) {
                             fprintf(out, "%s", temp->symbol->lit);
                         break;
 		case AST_FUNC_DECLARATION: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out,"%s ", temp->symbol->lit);
 			                fprintf(out, "(");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			                fprintf(out, ")");
-			                compile(temp->son[2], out);
+			                generateSource(temp->son[2], out);
 			            break;
 		case AST_FUNC_PARAMLIST: 
-			                compile(temp->son[0], out);
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[0], out);
+			                generateSource(temp->son[1], out);
 			            break;
         case AST_PARAMRESTO: 
                             fprintf(out, ", ");
-                            compile(temp->son[0], out);
-                            compile(temp->son[1], out);
+                            generateSource(temp->son[0], out);
+                            generateSource(temp->son[1], out);
                         break;
 		case AST_FUNC_PARAM:
-		 	                compile(temp->son[0], out);
+		 	                generateSource(temp->son[0], out);
 			                fprintf(out,"%s ", temp->symbol->lit);
 			            break;
         case AST_BLOCK: 
 			                fprintf(out, "{\n");
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, "\n};");
 			            break;
 		case AST_CMDLIST: 
                             if(temp->son[0] != 0){
-                                compile(temp->son[0], out);
+                                generateSource(temp->son[0], out);
                             }
-                            compile(temp->son[1], out);
+                            generateSource(temp->son[1], out);
 			            break;
 		case AST_CMDRESTO: 
 			                if( temp->son[0] != 0){
 				                fprintf(out, ";\n");
-                                compile(temp->son[0], out);
+                                generateSource(temp->son[0], out);
 			                }
-                            compile(temp->son[1], out);
+                            generateSource(temp->son[1], out);
 			            break;
         case AST_CMD_READ: 
 			                fprintf(out, "read ");
@@ -237,127 +237,127 @@ void compile(AST *node, FILE *out) {
 			            break;
         case AST_CMD_PRINT: 
 			                fprintf(out, "print ");
-                            compile(temp->son[0], out);	
+                            generateSource(temp->son[0], out);	
 			            break;
 		case AST_CMD_RETURN:
 			                fprintf(out,"return ");
-                            compile(temp->son[0], out);
+                            generateSource(temp->son[0], out);
 			            break;
 		case AST_CMD_IF: 
 			                fprintf(out, "if( ");
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
                             fprintf(out, " ) then \n");
-                            compile(temp->son[1], out);
+                            generateSource(temp->son[1], out);
                         break;
 		case AST_CMD_IF_ELSE: 
 			                fprintf(out, "if( ");
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
                             fprintf(out, " ) then \n");
-                            compile(temp->son[1], out);
+                            generateSource(temp->son[1], out);
                             fprintf(out, " else \n");
-                            compile(temp->son[2], out);
+                            generateSource(temp->son[2], out);
 			            break;
         case AST_CMD_LEAP:
                             fprintf(out, "leap \n");
                         break;
         case AST_CMD_LOOP:
                             fprintf(out, "loop( ");
-                            compile(temp->son[0], out);
+                            generateSource(temp->son[0], out);
                             fprintf(out, ") \n");
-                            compile(temp->son[1], out);
+                            generateSource(temp->son[1], out);
                         break;
         case AST_ATRIB:
                             fprintf(out, "%s = ", temp->symbol->lit);
-                            compile(temp->son[0], out);
+                            generateSource(temp->son[0], out);
                         break;
         case AST_VEC_POS_ATRIB:
                             fprintf(out, "%s [", temp->symbol->lit);
-                            compile(temp->son[0], out);
+                            generateSource(temp->son[0], out);
                             fprintf(out, "] = ");
-                            compile(temp->son[1], out);
+                            generateSource(temp->son[1], out);
                         break;
         case AST_ARGLIST:
-                            compile(temp->son[0], out);
-                            compile(temp->son[1], out);
+                            generateSource(temp->son[0], out);
+                            generateSource(temp->son[1], out);
                         break;
         case AST_ARGRESTO:
                             fprintf(out, ", ");
-                            compile(temp->son[0], out);
-                            compile(temp->son[1], out);
+                            generateSource(temp->son[0], out);
+                            generateSource(temp->son[1], out);
                         break;
         case AST_VECTOR:
                             fprintf(out, "%s [", temp->symbol->lit);
-                            compile(temp->son[0], out);
+                            generateSource(temp->son[0], out);
                             fprintf(out, "]");
                         break;
         case AST_FUNCTION:
                             fprintf(out, "%s (", temp->symbol->lit);
-                            compile(temp->son[0], out);
+                            generateSource(temp->son[0], out);
                             fprintf(out, ")");
                         break;
 		case AST_OP_ADD: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, " + ");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			            break;
         case AST_OP_SUB: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, " - ");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			            break;
         case AST_OP_MUL: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, " * ");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 		                break;
 		case AST_OP_DIV: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, " / ");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			            break;
 		case AST_OP_AND: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, " and ");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			            break;
 		case AST_OP_OR: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, " or ");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			            break;
 		case AST_OP_DIF: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, " != ");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			            break;
 		case AST_OP_EQ: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, " == ");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			            break;
 		case AST_OP_GE: 
                             fprintf(out, ">= ");
-                            compile(temp->son[0], out);
+                            generateSource(temp->son[0], out);
 			            break;
 		case AST_OP_LE: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, " <= ");
-			                compile(temp->son[1], out);			
+			                generateSource(temp->son[1], out);			
 			            break;
 		case AST_OP_GT: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, " > ");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			            break;
 		case AST_OP_LT: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, " < ");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
                         break;
 		case AST_OP_NOT: 
-			                compile(temp->son[0], out);
+			                generateSource(temp->son[0], out);
 			                fprintf(out, "not ");
-			                compile(temp->son[1], out);
+			                generateSource(temp->son[1], out);
 			            break;
 		default: 
             fprintf(stderr, "AST_UNKNOWN(%s)\n", temp->symbol->lit); 
@@ -365,7 +365,7 @@ void compile(AST *node, FILE *out) {
 	}
 }
 
-void initFile(AST *node){
+void initFileAndGenerateSource(AST *node){
     FILE *code;
     time_t raw;
     char title[40] = "Code";
@@ -381,7 +381,7 @@ void initFile(AST *node){
     strcat(title, ".txt");
 
     code = fopen(title, "w+");
-    compile(node, code);
+    generateSource(node, code);
     closeFile(code);
 }
 

@@ -52,7 +52,7 @@ int yylex();
 
 %%
 
-programa    : declist                                                       {$$ = $1;astPrint($1, 0); initFile($1);}
+programa    : declist                                                       {$$ = $1;astPrint($1, 0); initFileAndGenerateSource($1);}
             ;
 
 declist     : dec declist                                                   {$$ = astCreate(AST_DECLIST, 0, $1, $2, 0, 0);}

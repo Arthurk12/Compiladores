@@ -1,3 +1,0 @@
-byte doin = O;
-int main(){
-};
