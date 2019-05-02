@@ -365,26 +365,6 @@ void generateSource(AST *node, FILE *out) {
 	}
 }
 
-void initFileAndGenerateSource(AST *node){
-    FILE *code;
-    time_t raw;
-    char title[40] = "Code";
-    char sec[3];
-    struct tm * timeinfo;
-
-    time (&raw);
-    timeinfo = localtime (&raw);
-
-    strncpy(sec, &asctime(timeinfo)[17],2*sizeof(char));
-
-    strcat(title, sec);
-    strcat(title, ".txt");
-
-    code = fopen(title, "w+");
-    generateSource(node, code);
-    closeFile(code);
-}
-
 void closeFile(FILE *code){
     fclose(code);
 }

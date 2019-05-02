@@ -10,7 +10,7 @@ byte x = DE;
 
 byte main ()
   {
-  a=f(a+c,b,"batata");
+  a=f((((a+c)*A)-(IO*a)),b,"batata");
   
   a = C;
   v[a] = AO;

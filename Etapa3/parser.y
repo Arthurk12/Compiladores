@@ -8,6 +8,7 @@
 void yyerror(char *msg);
 int yylex();
 
+FILE *out = NULL;
 %}
 
 %union{
@@ -52,7 +53,7 @@ int yylex();
 
 %%
 
-programa    : declist                                                       {$$ = $1;astPrint($1, 0); initFileAndGenerateSource($1);}
+programa    : declist                                                       {$$ = $1;astPrint($1, 0); generateSource($1, out);}
             ;
 
 declist     : dec declist                                                   {$$ = astCreate(AST_DECLIST, 0, $1, $2, 0, 0);}
