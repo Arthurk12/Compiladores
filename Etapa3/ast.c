@@ -355,9 +355,8 @@ void generateSource(AST *node, FILE *out) {
 			                generateSource(temp->son[1], out);
                         break;
 		case AST_OP_NOT: 
-			                generateSource(temp->son[0], out);
 			                fprintf(out, "not ");
-			                generateSource(temp->son[1], out);
+			                generateSource(temp->son[0], out);
 			            break;
 		default: 
             fprintf(stderr, "AST_UNKNOWN(%s)\n", temp->symbol->lit); 
