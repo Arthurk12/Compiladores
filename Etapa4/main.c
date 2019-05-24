@@ -27,7 +27,7 @@ int main(int argc, char** argv){
 	
 	if((yyin = fopen(argv[1], "r"))==0){
 		printf("Erro ao abrir o arquivo de entrada!");
-		exit(1);
+		exit(2);
 	}
 
 	if((out = fopen(argv[2], "w+"))==0){

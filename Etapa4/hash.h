@@ -11,7 +11,8 @@ IAN FISCHER SCHILLING - 00275603
 #define HASHSIZE 997
 
 typedef struct hashnode{
-	int type;	
+	int type;
+	int datatype;	
 	char *lit;
 	struct hashnode *next;
 }hashNode;
@@ -26,3 +27,4 @@ int hashAddress(char *lit);
 hashNode* hashInsert(int type, char *lit);
 void hashPrint(void);
 hashNode* hashFind(char *lit, int address);
+void hashCheckUndeclared();

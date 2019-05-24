@@ -1,3 +1,4 @@
+//AST STYMBOLS
 #define AST_OP_EQUAL            1
 #define AST_OP_ADD              2
 #define AST_OP_SUB              3
@@ -45,3 +46,10 @@
 #define AST_ARGLIST             45
 #define AST_PARAMRESTO          46
 #define AST_VEC_DECLARATION_INI 47
+
+
+
+//HASH DATATYPES
+#define DATATYPE_BYTE           1
+#define DATATYPE_INT            2
+#define DATATYPE_FLOAT          3

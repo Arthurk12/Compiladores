@@ -1,7 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "ast.h"
+#include "semantic.h"
 #include "functions.h"
 
 
@@ -53,7 +53,7 @@ FILE *out = NULL;
 
 %%
 
-programa    : declist                                                       {$$ = $1;astPrint($1, 0); generateSource($1, out);}
+programa    : declist                                                       {$$ = $1;astPrint($1, 0); generateSource($1, out); setDeclaration($1);}
             ;
 
 declist     : dec declist                                                   {$$ = astCreate(AST_DECLIST, 0, $1, $2, 0, 0);}
@@ -157,6 +157,6 @@ argresto    : ',' expr argresto                             {$$ = astCreate(AST_
 %%
 
 void yyerror(char *msg){
-    fprintf(stderr, "%s on line: %d\n",msg, getLineNumber());
+    fprintf(stderr, "%s on line: %d\n", msg, getLineNumber());
     exit(3);
 }

@@ -4,6 +4,7 @@ IAN FISCHER SCHILLING - 00275603
 */
 
 #include <stdio.h>
+#include "functions.h"
 #include "hash.h"
 #include "symbols.h"
 
@@ -14,6 +15,7 @@ typedef struct astnode{
     int type;
     hashNode *symbol;
     struct astnode* son[MAX_SONS];
+    int lineNumber;
 } AST;
 
 

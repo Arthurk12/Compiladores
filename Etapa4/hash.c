@@ -55,6 +55,6 @@ void hashPrint(){
 	
 	for(i=0; i<HASHSIZE; i++)
 		for(node = HashTable[i]; node!=0; node=node->next)
-			printf("Hash_Table_Node[%d]: %s  -> %i \n", i, node->lit, node->type);
+			printf("Hash_Table_Node[%d]: %s  -> %i |%i|\n", i, node->lit, node->type, node->datatype);
 
 }
