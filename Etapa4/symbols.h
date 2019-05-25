@@ -1,4 +1,12 @@
-//AST STYMBOLS
+/*
+ARTHUR BÖCKMANN GROSSI - 00275607
+IAN FISCHER SCHILLING - 00275603
+*/
+
+#ifndef SYMBOLS_HEADER
+#define SYMBOLS_HEADER
+
+//AST SYMBOLS
 #define AST_OP_EQUAL            1
 #define AST_OP_ADD              2
 #define AST_OP_SUB              3
@@ -53,3 +61,5 @@
 #define DATATYPE_BYTE           1
 #define DATATYPE_INT            2
 #define DATATYPE_FLOAT          3
+
+#endif
