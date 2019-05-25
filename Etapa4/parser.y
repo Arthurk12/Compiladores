@@ -53,7 +53,7 @@ FILE *out = NULL;
 
 %%
 
-programa    : declist                                                       {$$ = $1;astPrint($1, 0); generateSource($1, out); setDeclaration($1);}
+programa    : declist                                                       {$$ = $1;astPrint($1, 0); generateSource($1, out); setDeclaration($1); checkUndeclared(); checkOperands($1);}
             ;
 
 declist     : dec declist                                                   {$$ = astCreate(AST_DECLIST, 0, $1, $2, 0, 0);}

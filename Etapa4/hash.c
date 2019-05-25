@@ -62,5 +62,14 @@ void hashPrint(){
 }
 
 void hashCheckUndeclared(){
-	// TO-DO
+	hashNode *node;
+
+	int i;
+	for (i = 0; i < HASHSIZE; i++){
+			for( node = HashTable[i]; node; node = node->next){
+				if (node->dec == false){
+					fprintf(stderr, "[SYNTATIC] - Undeclared symbol [%s].\n",node->text);
+				}
+			}
+	}
 }
