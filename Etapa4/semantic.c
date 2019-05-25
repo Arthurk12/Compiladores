@@ -37,7 +37,7 @@ void setDeclaration(AST *node){
 }
 
 void checkUndeclared(){
-    // TO-DO
+    hashCheckUndeclared();
 }
 
 void checkOperands(AST* node){
