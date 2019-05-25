@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "semantic.h"
 
+int semanticError = 0;
+
 void setDeclaration(AST *node){
     if(node == 0) return;
 
@@ -99,5 +101,7 @@ void checkOperands(AST* node){
         case AST_ARGLIST:
         case AST_PARAMRESTO:
         case AST_VEC_DECLARATION_INI:
+        default:
+            break;
 	}
 }
