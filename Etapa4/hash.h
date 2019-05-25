@@ -15,6 +15,7 @@ typedef struct hashnode{
 	int datatype;	
 	char *lit;
 	struct hashnode *next;
+	bool dec;
 }hashNode;
 
 

@@ -13,6 +13,7 @@ void setDeclaration(AST *node){
         case AST_VAR_DECLARATION:
         case AST_VEC_DECLARATION:
         case AST_VEC_DECLARATION_INI:
+        case AST_FUNC_DECLARATION:
                                     if(node->symbol == 0) return;
 
                                     if(node->son[0]->type == AST_DATATYPE_BYTE)
@@ -21,6 +22,8 @@ void setDeclaration(AST *node){
                                         node->symbol->datatype = DATATYPE_INT;
                                     else if(node->son[0]->type == AST_DATATYPE_FLOAT)
                                         node->symbol->datatype = DATATYPE_FLOAT;
+
+                                    node->symbol->dec = true;
 
                                 break;
         default:
