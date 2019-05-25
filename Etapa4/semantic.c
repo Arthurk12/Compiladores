@@ -14,6 +14,7 @@ void setDeclaration(AST *node){
         case AST_VEC_DECLARATION:
         case AST_VEC_DECLARATION_INI:
         case AST_FUNC_DECLARATION:
+        case AST_FUNC_PARAM:
                                     if(node->symbol == 0) return;
                                     if(node->symbol->dec == true){
                                         fprintf(stderr, "Semantic Error: '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
