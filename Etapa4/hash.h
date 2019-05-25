@@ -3,6 +3,9 @@ ARTHUR BÖCKMANN GROSSI - 00275607
 IAN FISCHER SCHILLING - 00275603
 */
 
+#ifndef HASH_HEADER
+#define HASH_HEADER
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,4 +32,6 @@ int hashAddress(char *lit);
 hashNode* hashInsert(int type, char *lit);
 void hashPrint(void);
 hashNode* hashFind(char *lit, int address);
-void hashCheckUndeclared();
+void hashCheckUndeclared(void);
+
+#endif

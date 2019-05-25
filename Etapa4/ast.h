@@ -3,6 +3,9 @@ ARTHUR BÖCKMANN GROSSI - 00275607
 IAN FISCHER SCHILLING - 00275603
 */
 
+#ifndef AST_HEADER
+#define AST_HEADER
+
 #include <stdio.h>
 #include "functions.h"
 #include "hash.h"
@@ -25,3 +28,4 @@ void astPrint(AST *node, int level);
 void generateSource(AST *node, FILE *out);
 void closeFile(FILE *code);
 
+#endif

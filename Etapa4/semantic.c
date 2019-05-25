@@ -35,3 +35,11 @@ void setDeclaration(AST *node){
     }
 
 }
+
+void checkUndeclared(){
+    // TO-DO
+}
+
+void checkOperands(AST* node){
+    // TO-DO
+}

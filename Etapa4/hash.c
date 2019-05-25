@@ -60,3 +60,7 @@ void hashPrint(){
 			printf("Hash_Table_Node[%d]: %s  -> %i |%i|\n", i, node->lit, node->type, node->datatype);
 
 }
+
+void hashCheckUndeclared(){
+	// TO-DO
+}
