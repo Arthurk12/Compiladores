@@ -11,7 +11,6 @@ IAN FISCHER SCHILLING - 00275603
 
 #define HASHSIZE 997
 
-typedef enum { false, true } bool;
 
 typedef struct hashnode{
 	int type;
