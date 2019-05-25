@@ -43,6 +43,8 @@ hashNode* hashInsert(int type, char *lit){
 
 	strcpy(newNode->lit, lit);
 
+	newNode->dec = false;
+
 	newNode->next = HashTable[address];
 	HashTable[address] = newNode;
 

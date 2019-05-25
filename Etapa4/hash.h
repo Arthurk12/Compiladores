@@ -6,6 +6,7 @@ IAN FISCHER SCHILLING - 00275603
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 
 #define HASHSIZE 997
