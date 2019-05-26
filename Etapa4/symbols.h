@@ -61,5 +61,8 @@ IAN FISCHER SCHILLING - 00275603
 #define DATATYPE_BYTE           1
 #define DATATYPE_INT            2
 #define DATATYPE_FLOAT          3
+#define DATATYPE_BYTE_VEC       4
+#define DATATYPE_INT_VEC        5
+#define DATATYPE_FLOAT_VEC      6
 
 #endif

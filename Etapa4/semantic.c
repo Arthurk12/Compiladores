@@ -11,28 +11,36 @@ void setDeclaration(AST *node){
         setDeclaration(node->son[i]);
     }
 
+    if(node->symbol == 0) return;
+    if(node->symbol->dec == true){
+        fprintf(stderr, "Semantic Error: '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
+        semanticError = true;
+    }
+
     switch(node->type){
         case AST_VAR_DECLARATION:
-        case AST_VEC_DECLARATION:
-        case AST_VEC_DECLARATION_INI:
         case AST_FUNC_DECLARATION:
         case AST_FUNC_PARAM:
-                                    if(node->symbol == 0) return;
-                                    if(node->symbol->dec == true){
-                                        fprintf(stderr, "Semantic Error: '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
-                                        semanticError = true;
-                                    }
+            if(node->son[0]->type == AST_DATATYPE_BYTE)
+                node->symbol->datatype = DATATYPE_BYTE;
+            else if(node->son[0]->type == AST_DATATYPE_INT)
+                node->symbol->datatype = DATATYPE_INT;
+            else if(node->son[0]->type == AST_DATATYPE_FLOAT)
+                node->symbol->datatype = DATATYPE_FLOAT;
 
-                                    if(node->son[0]->type == AST_DATATYPE_BYTE)
-                                        node->symbol->datatype = DATATYPE_BYTE;
-                                    else if(node->son[0]->type == AST_DATATYPE_INT)
-                                        node->symbol->datatype = DATATYPE_INT;
-                                    else if(node->son[0]->type == AST_DATATYPE_FLOAT)
-                                        node->symbol->datatype = DATATYPE_FLOAT;
+            node->symbol->dec = true;
+            break;
+        case AST_VEC_DECLARATION:
+        case AST_VEC_DECLARATION_INI:
+            if(node->son[0]->type == AST_DATATYPE_BYTE)
+                node->symbol->datatype = DATATYPE_BYTE_VEC;
+            else if(node->son[0]->type == AST_DATATYPE_INT)
+                node->symbol->datatype = DATATYPE_INT_VEC;
+            else if(node->son[0]->type == AST_DATATYPE_FLOAT)
+                node->symbol->datatype = DATATYPE_FLOAT_VEC;
 
-                                    node->symbol->dec = true;
-
-                                break;
+            node->symbol->dec = true;
+            break;
         default:
                                 break;
     }
@@ -57,12 +65,17 @@ void checkOperands(AST* node){
     }
 	switch(node->type){
         case AST_TK_IDENTIFIER:
-            if(node->symbol->type != TK_IDENTIFIER){
+            if((node->symbol->type != TK_IDENTIFIER) || isVector(node->symbol->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
             }
             break;
         case AST_VECTOR:
+            if((node->symbol->type != TK_IDENTIFIER) || !isVector(node->symbol->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
+                semanticError = 1;
+            }
+            break;
 
 
 
@@ -120,28 +133,41 @@ void checkOperands(AST* node){
 
 bool isInt(int type){
     switch (type){
-    case AST_DATATYPE_BYTE:
-    case AST_DATATYPE_INT:
-    case AST_LIT_CHAR: 
-    case AST_LIT_INTEGER:
-        return true;
-        break;
-    
-    default:
-        return false;
-        break;
+        case AST_DATATYPE_BYTE:
+        case AST_DATATYPE_INT:
+        case AST_LIT_CHAR: 
+        case AST_LIT_INTEGER:
+            return true;
+            break;
+        
+        default:
+            return false;
+            break;
     }
 }
 
 bool isFloat(int type){
     switch (type){
-    case AST_DATATYPE_FLOAT:
-    case AST_LIT_FLOAT:
-        return true;
-        break;
-    
-    default:
-        return false;
-        break;
+        case AST_DATATYPE_FLOAT:
+        case AST_LIT_FLOAT:
+            return true;
+            break;
+        
+        default:
+            return false;
+            break;
+    }
+}
+
+bool isVector(int datatype){
+    switch(datatype){
+        case DATATYPE_BYTE_VEC:
+        case DATATYPE_INT_VEC:
+        case DATATYPE_FLOAT_VEC:
+            return true;
+            break;
+        default:
+            return false;
+            break;
     }
 }
