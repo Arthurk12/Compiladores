@@ -41,6 +41,7 @@ hashNode* hashInsert(int type, char *lit){
 	newNode = (hashNode *) calloc(1, sizeof(hashNode));
 	newNode->type = type;
 	newNode->lit = calloc(strlen(yytext)+1, sizeof(char));
+	newNode->datatype = NO_DATATYPE;
 
 	strcpy(newNode->lit, lit);
 

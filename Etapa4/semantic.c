@@ -51,7 +51,7 @@ void setDeclaration(AST *node){
             node->symbol->dec = true;
             break;
         default:
-                                break;
+            break;
     }
 
 }
@@ -85,7 +85,12 @@ void checkOperands(AST* node){
                 semanticError = 1;
             }
             break;
-
+        case AST_FUNCTION:
+            if((node->symbol->type != TK_IDENTIFIER) || !isFunction(node->symbol->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
+                semanticError = 1;
+            }
+            break;
 
 
         case AST_OP_EQUAL:
@@ -108,7 +113,7 @@ void checkOperands(AST* node){
         case AST_LIT_STRING:
         
         
-        case AST_FUNCTION:
+        
         case AST_VAR_DECLARATION:
         case AST_VEC_DECLARATION:
         case AST_FUNC_DECLARATION:
@@ -140,12 +145,14 @@ void checkOperands(AST* node){
 	}
 }
 
-bool isInt(int type){
+bool isInt(int datatype){
     switch (type){
-        case AST_DATATYPE_BYTE:
-        case AST_DATATYPE_INT:
-        case AST_LIT_CHAR: 
-        case AST_LIT_INTEGER:
+        case DATATYPE_BYTE:
+        case DATATYPE_BYTE_VEC:
+        case DATATYPE_BYTE_FUN:
+        case DATATYPE_INT:
+        case DATATYPE_INT_VEC: 
+        case DATATYPE_INT_FUN:
             return true;
             break;
         
@@ -155,10 +162,11 @@ bool isInt(int type){
     }
 }
 
-bool isFloat(int type){
+bool isFloat(int datatype){
     switch (type){
-        case AST_DATATYPE_FLOAT:
-        case AST_LIT_FLOAT:
+        case DATATYPE_FLOAT:
+        case DATATYPE_FLOAT_VEC:
+        case DATATYPE_FLOAT_FUN:
             return true;
             break;
         
