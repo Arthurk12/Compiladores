@@ -19,7 +19,6 @@ void setDeclaration(AST *node){
 
     switch(node->type){
         case AST_VAR_DECLARATION:
-        case AST_FUNC_DECLARATION:
         case AST_FUNC_PARAM:
             if(node->son[0]->type == AST_DATATYPE_BYTE)
                 node->symbol->datatype = DATATYPE_BYTE;
@@ -38,6 +37,16 @@ void setDeclaration(AST *node){
                 node->symbol->datatype = DATATYPE_INT_VEC;
             else if(node->son[0]->type == AST_DATATYPE_FLOAT)
                 node->symbol->datatype = DATATYPE_FLOAT_VEC;
+
+            node->symbol->dec = true;
+            break;
+        case AST_FUNC_DECLARATION:
+            if(node->son[0]->type == AST_DATATYPE_BYTE)
+                node->symbol->datatype = DATATYPE_BYTE_FUN;
+            else if(node->son[0]->type == AST_DATATYPE_INT)
+                node->symbol->datatype = DATATYPE_INT_FUN;
+            else if(node->son[0]->type == AST_DATATYPE_FLOAT)
+                node->symbol->datatype = DATATYPE_FLOAT_FUN;
 
             node->symbol->dec = true;
             break;
