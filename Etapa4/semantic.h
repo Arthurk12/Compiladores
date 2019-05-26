@@ -8,10 +8,14 @@ IAN FISCHER SCHILLING - 00275603
 
 #include <stdio.h>
 #include "ast.h"
+#include "y.tab.h"
 
 
 void setDeclaration(AST *node);
 void checkUndeclared(void);
 void checkOperands(AST* node);
+
+bool isInt(int type);
+bool isFloat(int type);
 
 #endif

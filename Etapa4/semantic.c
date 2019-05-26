@@ -56,6 +56,16 @@ void checkOperands(AST* node){
 		checkOperands(node->son[i]);
     }
 	switch(node->type){
+        case AST_TK_IDENTIFIER:
+            if(node->symbol->type != TK_IDENTIFIER){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
+                semanticError = 1;
+            }
+            break;
+        case AST_VECTOR:
+
+
+
         case AST_OP_EQUAL:
         case AST_OP_ADD:
         case AST_OP_SUB:
@@ -74,8 +84,8 @@ void checkOperands(AST* node){
         case AST_LIT_FLOAT:
         case AST_LIT_CHAR:
         case AST_LIT_STRING:
-        case AST_TK_IDENTIFIER:
-        case AST_VECTOR:
+        
+        
         case AST_FUNCTION:
         case AST_VAR_DECLARATION:
         case AST_VEC_DECLARATION:
@@ -106,4 +116,32 @@ void checkOperands(AST* node){
         default:
             break;
 	}
+}
+
+bool isInt(int type){
+    switch (type){
+    case AST_DATATYPE_BYTE:
+    case AST_DATATYPE_INT:
+    case AST_LIT_CHAR: 
+    case AST_LIT_INTEGER:
+        return true;
+        break;
+    
+    default:
+        return false;
+        break;
+    }
+}
+
+bool isFloat(int type){
+    switch (type){
+    case AST_DATATYPE_FLOAT:
+    case AST_LIT_FLOAT:
+        return true;
+        break;
+    
+    default:
+        return false;
+        break;
+    }
 }
