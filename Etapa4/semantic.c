@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "semantic.h"
 
-int semanticError = 0;
+bool semanticError = false;
 
 void setDeclaration(AST *node){
     if(node == 0) return;
@@ -20,6 +20,7 @@ void setDeclaration(AST *node){
                                     if(node->symbol == 0) return;
                                     if(node->symbol->dec == true){
                                         fprintf(stderr, "Semantic Error: '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
+                                        semanticError = true;
                                     }
 
                                     if(node->son[0]->type == AST_DATATYPE_BYTE)
@@ -39,7 +40,8 @@ void setDeclaration(AST *node){
 }
 
 void checkUndeclared(){
-    hashCheckUndeclared();
+    if(hashCheckUndeclared())
+        semanticError = true;    
 }
 
 void checkOperands(AST* node){

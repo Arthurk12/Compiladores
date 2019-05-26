@@ -8,7 +8,7 @@
 #
 
 etapa4: y.tab.o lex.yy.o hash.o ast.o semantic.o main.o 
-	gcc -o etapa4 lex.yy.o y.tab.o main.o hash.o ast.o semantic.o -Wall
+	gcc -o etapa4 lex.yy.o y.tab.o hash.o ast.o semantic.o main.o -Wall
 main.o: main.c
 	gcc -c main.c -Wall
 semantic.o: semantic.c

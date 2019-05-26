@@ -1,5 +1,6 @@
 #include "hash.h"
 #include "functions.h"
+#include "y.tab.h"
 
 void initMe(void) {
 	int i=0;
@@ -61,15 +62,18 @@ void hashPrint(){
 
 }
 
-void hashCheckUndeclared(){
+bool hashCheckUndeclared(){
 	hashNode *node;
+	bool error = false;
 
 	int i;
 	for (i = 0; i < HASHSIZE; i++){
 			for( node = HashTable[i]; node; node = node->next){
-				if (node->dec == false){
-					fprintf(stderr, "[SYNTATIC] - Undeclared symbol [%s].\n",node->text);
+				if (node->dec == false && node->type == TK_IDENTIFIER){
+					fprintf(stderr, "Semantic Error: '%s' wasn't declared.\n",node->lit);
+					error = true;
 				}
 			}
 	}
+	return error;
 }

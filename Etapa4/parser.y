@@ -7,7 +7,6 @@
 
 void yyerror(char *msg);
 int yylex();
-extern int semanticError;
 
 FILE *out = NULL;
 %}

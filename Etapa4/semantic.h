@@ -9,6 +9,7 @@ IAN FISCHER SCHILLING - 00275603
 #include <stdio.h>
 #include "ast.h"
 
+
 void setDeclaration(AST *node);
 void checkUndeclared(void);
 void checkOperands(AST* node);
