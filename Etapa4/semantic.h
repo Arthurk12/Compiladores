@@ -17,6 +17,8 @@ void checkOperands(AST* node);
 
 bool isInt(int type);
 bool isFloat(int type);
+bool isVariable(int datatype)
 bool isVector(int datatype);
+bool isFunction(int datatype);
 
 #endif

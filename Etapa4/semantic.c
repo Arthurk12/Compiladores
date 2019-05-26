@@ -74,7 +74,7 @@ void checkOperands(AST* node){
     }
 	switch(node->type){
         case AST_TK_IDENTIFIER:
-            if((node->symbol->type != TK_IDENTIFIER) || isVector(node->symbol->datatype)){
+            if((node->symbol->type != TK_IDENTIFIER) || !isVariable(node->symbol->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
             }
@@ -168,11 +168,37 @@ bool isFloat(int type){
     }
 }
 
+bool isVariable(int datatype){
+    switch(datatype){
+        case DATATYPE_BYTE:
+        case DATATYPE_INT:
+        case DATATYPE_FLOAT:
+            return true;
+            break;
+        default:
+            return false;
+            break;
+    }
+}
+
 bool isVector(int datatype){
     switch(datatype){
         case DATATYPE_BYTE_VEC:
         case DATATYPE_INT_VEC:
         case DATATYPE_FLOAT_VEC:
+            return true;
+            break;
+        default:
+            return false;
+            break;
+    }
+}
+
+bool isFunction(int datatype){
+    switch(datatype){
+        case DATATYPE_BYTE_FUN:
+        case DATATYPE_INT_FUN:
+        case DATATYPE_FLOAT_FUN:
             return true;
             break;
         default:
