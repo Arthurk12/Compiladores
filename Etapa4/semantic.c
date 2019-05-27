@@ -12,14 +12,15 @@ void setDeclaration(AST *node){
     }
 
     if(node->symbol == 0) return;
-    if(node->symbol->dec == true){
-        fprintf(stderr, "Semantic Error: '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
-        semanticError = true;
-    }
 
     switch(node->type){
         case AST_VAR_DECLARATION:
         case AST_FUNC_PARAM:
+            if(node->symbol->dec == true){
+                fprintf(stderr, "Semantic Error: '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
+                semanticError = true;
+                break;
+            }
             if(node->son[0]->type == AST_DATATYPE_BYTE)
                 node->symbol->datatype = DATATYPE_BYTE;
             else if(node->son[0]->type == AST_DATATYPE_INT)
@@ -32,6 +33,11 @@ void setDeclaration(AST *node){
             break;
         case AST_VEC_DECLARATION:
         case AST_VEC_DECLARATION_INI:
+            if(node->symbol->dec == true){
+                fprintf(stderr, "Semantic Error: '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
+                semanticError = true;
+                break;
+            }
             if(node->son[0]->type == AST_DATATYPE_BYTE)
                 node->symbol->datatype = DATATYPE_BYTE_VEC;
             else if(node->son[0]->type == AST_DATATYPE_INT)
@@ -43,6 +49,11 @@ void setDeclaration(AST *node){
             node->datatype = node->symbol->datatype;
             break;
         case AST_FUNC_DECLARATION:
+            if(node->symbol->dec == true){
+                fprintf(stderr, "Semantic Error: '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
+                semanticError = true;
+                break;
+            }
             if(node->son[0]->type == AST_DATATYPE_BYTE)
                 node->symbol->datatype = DATATYPE_BYTE_FUN;
             else if(node->son[0]->type == AST_DATATYPE_INT)
@@ -61,7 +72,7 @@ void setDeclaration(AST *node){
 
 void checkUndeclared(){
     if(hashCheckUndeclared())
-        semanticError = true;    
+        semanticError = true;
 }
 
 void checkOperands(AST* node){
@@ -71,12 +82,18 @@ void checkOperands(AST* node){
 	if (node == 0 ){
         return;
     }
-
+    
 	for ( i = 0; i < MAX_SONS; i++){
-		checkOperands(node->son[i]);
+        checkOperands(node->son[i]);
     }
+    fprintf(stderr, "%i \n", node->type);
 	switch(node->type){
         case AST_TK_IDENTIFIER:
+            if(node->symbol == 0){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: No symbol.\n", node->lineNumber);
+                semanticError = 1;
+                break;
+            }
             if((node->symbol->type != TK_IDENTIFIER) || !isVariable(node->symbol->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
@@ -84,6 +101,11 @@ void checkOperands(AST* node){
             node->datatype = node->symbol->datatype;
             break;
         case AST_VECTOR:
+            if(node->symbol == 0){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: No symbol.\n", node->lineNumber);
+                semanticError = 1;
+                break;
+            }
             if((node->symbol->type != TK_IDENTIFIER) || !isVector(node->symbol->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
@@ -95,6 +117,11 @@ void checkOperands(AST* node){
             node->datatype = node->symbol->datatype;
             break;
         case AST_FUNCTION:
+            if(node->symbol == 0){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: No symbol.\n", node->lineNumber);
+                semanticError = 1;
+                break;
+            }
             if((node->symbol->type != TK_IDENTIFIER) || !isFunction(node->symbol->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
@@ -150,7 +177,7 @@ void checkOperands(AST* node){
             break;        
         case AST_VAR_DECLARATION:
             if(!isSameDatatype(node->son[0]->datatype, node->son[1]->datatype)){
-                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s and %s must have the same datatype.\n", node->lineNumber, node->son[0]->symbol->lit, node->son[1]->symbol->lit);
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: must have the same datatype.\n", node->lineNumber);
                 semanticError = 1;
             }
             node->datatype = node->son[0]->datatype;

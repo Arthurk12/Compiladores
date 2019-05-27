@@ -119,6 +119,8 @@ void astPrint(AST *node, int level){
                         break;
         case AST_PARAMRESTO:            fprintf(stderr, "AST_PARAMRESTO) \n");
                         break;
+        case AST_VEC_DECLARATION_INI:   fprintf(stderr, "AST_VEC_DECLARATION_INI) \n");
+                        break;
         default:                        fprintf(stderr, "AST_UNKNOWN) %d \n", node->type);
                         break;
     }
