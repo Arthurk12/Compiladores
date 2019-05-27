@@ -99,7 +99,8 @@ void checkOperands(AST* node){
         case AST_OP_SUB:
         case AST_OP_MUL:
         case AST_OP_DIV:
-            //TO-DO
+            if((isInt(node->son[0]->symbol->datatype))){
+            }
             break;
         case AST_OP_DIF:
         case AST_OP_EQ:
@@ -188,6 +189,14 @@ bool isFloat(int datatype){
     }
 }
 
+bool isBool(int datatype){
+    if(datatype == DATATYPE_BOOL)
+        return true;
+    else
+        return false;
+    
+}
+
 bool isVariable(int datatype){
     switch(datatype){
         case DATATYPE_BYTE:
@@ -225,4 +234,17 @@ bool isFunction(int datatype){
             return false;
             break;
     }
+}
+
+bool isSameDatatype(int datatype1, int datatype2){
+    if(
+        (isInt(datatype1)&&isInt(datatype2))||
+        (isFloat(datatype1)&&isFloat(datatype2))||
+        (isBool(datatype1)&&isBool(datatype2))){
+            return true;
+        }
+    else{
+        return false;
+    }
+    
 }
