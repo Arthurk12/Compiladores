@@ -9,6 +9,7 @@ IAN FISCHER SCHILLING - 00275603
 #include <stdio.h>
 #include "ast.h"
 #include "y.tab.h"
+#include<stdbool.h>
 
 
 void setDeclaration(AST *node);
@@ -18,7 +19,7 @@ void checkOperands(AST* node);
 bool isInt(int datatype);
 bool isFloat(int datatype);
 bool isBool(int datatype);
-bool isVariable(int datatype)
+bool isVariable(int datatype);
 bool isVector(int datatype);
 bool isFunction(int datatype);
 bool isSameDatatype(int datatype1, int datatype2);

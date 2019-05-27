@@ -182,6 +182,8 @@ void checkOperands(AST* node){
             node->datatype = node->son[0]->datatype;
             break;
         case AST_FUNC_DECLARATION:
+            node->datatype = node->son[0]->datatype;
+            break;
         case AST_DATATYPE_BYTE:
         case AST_DATATYPE_FLOAT:
         case AST_DATATYPE_INT:
@@ -210,7 +212,7 @@ void checkOperands(AST* node){
 }
 
 bool isInt(int datatype){
-    switch (type){
+    switch (datatype){
         case DATATYPE_BYTE:
         case DATATYPE_BYTE_VEC:
         case DATATYPE_BYTE_FUN:
@@ -227,7 +229,7 @@ bool isInt(int datatype){
 }
 
 bool isFloat(int datatype){
-    switch (type){
+    switch (datatype){
         case DATATYPE_FLOAT:
         case DATATYPE_FLOAT_VEC:
         case DATATYPE_FLOAT_FUN:

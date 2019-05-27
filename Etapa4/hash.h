@@ -9,11 +9,11 @@ IAN FISCHER SCHILLING - 00275603
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include "symbols.h"
 
 
 #define HASHSIZE 997
-
-typedef enum { false, true } bool;
 
 typedef struct hashnode{
 	int type;
