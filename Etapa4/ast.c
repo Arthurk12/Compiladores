@@ -14,6 +14,7 @@ AST *astCreate(int type, hashNode *symbol_node, AST *s0, AST *s1, AST *s2, AST *
     new_node->son[2] = s2;
     new_node->son[3] = s3;
     new_node->lineNumber = getLineNumber();
+    new_node->datatype = NO_DATATYPE;
     return new_node;
 }
 

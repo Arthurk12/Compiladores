@@ -28,6 +28,7 @@ void setDeclaration(AST *node){
                 node->symbol->datatype = DATATYPE_FLOAT;
 
             node->symbol->dec = true;
+            node->datatype = node->symbol->datatype;
             break;
         case AST_VEC_DECLARATION:
         case AST_VEC_DECLARATION_INI:
@@ -39,6 +40,7 @@ void setDeclaration(AST *node){
                 node->symbol->datatype = DATATYPE_FLOAT_VEC;
 
             node->symbol->dec = true;
+            node->datatype = node->symbol->datatype;
             break;
         case AST_FUNC_DECLARATION:
             if(node->son[0]->type == AST_DATATYPE_BYTE)
@@ -49,6 +51,7 @@ void setDeclaration(AST *node){
                 node->symbol->datatype = DATATYPE_FLOAT_FUN;
 
             node->symbol->dec = true;
+            node->datatype = node->symbol->datatype;
             break;
         default:
             break;
@@ -78,31 +81,39 @@ void checkOperands(AST* node){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
             }
+            node->datatype = node->symbol->datatype;
             break;
         case AST_VECTOR:
             if((node->symbol->type != TK_IDENTIFIER) || !isVector(node->symbol->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
             }
-            if(!isInt(node->son[0]->symbol->datatype)){
+            if(!isInt(node->son[0]->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s index must be an integer.\n", node->son[0]->lineNumber, node->son[0]->symbol->lit);
                 semanticError = 1;
             }
+            node->datatype = node->symbol->datatype;
             break;
         case AST_FUNCTION:
             if((node->symbol->type != TK_IDENTIFIER) || !isFunction(node->symbol->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
             }
+            node->datatype = node->symbol->datatype;
             break;
         case AST_OP_ADD:
         case AST_OP_SUB:
         case AST_OP_MUL:
         case AST_OP_DIV:
-            if(!isSameDatatype(node->son[0]->symbol->datatype, node->son[1]->symbol->datatype)){
+            if(!isSameDatatype(node->son[0]->datatype, node->son[1]->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s and %s must have the same datatype.\n", node->lineNumber, node->son[0]->symbol->lit, node->son[1]->symbol->lit);
                 semanticError = 1;
             }
+            else if(isBool(node->son[0]->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: can't use boolean.\n", node->lineNumber);
+                semanticError = 1;
+            }
+            node->datatype = basicDatatype(node->son[0]->datatype);
             break;
         case AST_OP_DIF:
         case AST_OP_EQ:
@@ -110,12 +121,20 @@ void checkOperands(AST* node){
         case AST_OP_LE:
         case AST_OP_GT:
         case AST_OP_LT:
-            //TO-DO
-            break;
         case AST_OP_AND:
         case AST_OP_OR:
+            if(!isSameDatatype(node->son[0]->datatype, node->son[1]->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s and %s must have the same datatype.\n", node->lineNumber, node->son[0]->symbol->lit, node->son[1]->symbol->lit);
+                semanticError = 1;
+            }
+            node->datatype = DATATYPE_BOOL;
+            break;
         case AST_OP_NOT:
-            //TO-DO
+            if(node->son[0]->datatype == NO_DATATYPE){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s has no datatype.\n", node->lineNumber, node->son[0]->symbol->lit);
+                semanticError = 1;
+            }
+            node->datatype = DATATYPE_BOOL;
             break;
 
 
@@ -249,4 +268,14 @@ bool isSameDatatype(int datatype1, int datatype2){
         return false;
     }
     
+}
+
+int basicDatatype(int datatype){
+    if(isInt(datatype))
+        return DATATYPE_INT;
+    if(isFloat(datatype))
+        return DATATYPE_FLOAT;
+    if(isBool(datatype))
+        return DATATYPE_BOOL;
+    return NO_DATATYPE;
 }

@@ -16,6 +16,7 @@ IAN FISCHER SCHILLING - 00275603
 
 typedef struct astnode{
     int type;
+    int datatype;
     hashNode *symbol;
     struct astnode* son[MAX_SONS];
     int lineNumber;

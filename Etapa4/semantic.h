@@ -23,4 +23,6 @@ bool isVector(int datatype);
 bool isFunction(int datatype);
 bool isSameDatatype(int datatype1, int datatype2);
 
+int basicDatatype(int datatype);
+
 #endif
