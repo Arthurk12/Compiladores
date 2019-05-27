@@ -76,5 +76,6 @@ IAN FISCHER SCHILLING - 00275603
 #define DATATYPE_INT_FUN        8
 #define DATATYPE_FLOAT_FUN      9
 #define DATATYPE_BOOL           10
+#define DATATYPE_STRING         11
 
 #endif
