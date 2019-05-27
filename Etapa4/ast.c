@@ -28,8 +28,6 @@ void astPrint(AST *node, int level){
 
     fprintf(stderr, "AST(");
     switch(node->type){
-        case AST_OP_EQUAL:  fprintf(stderr, "AST_OP_EQUAL, %d) \n", node->lineNumber);
-                        break;
         case AST_OP_ADD:    fprintf(stderr, "AST_ADD, %d) \n", node->lineNumber);
                         break;
         case AST_OP_SUB:    fprintf(stderr, "AST_SUB, %d) \n", node->lineNumber);

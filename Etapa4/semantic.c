@@ -91,22 +91,30 @@ void checkOperands(AST* node){
                 semanticError = 1;
             }
             break;
-
-
-        case AST_OP_EQUAL:
         case AST_OP_ADD:
         case AST_OP_SUB:
         case AST_OP_MUL:
         case AST_OP_DIV:
-        case AST_OP_AND:
-        case AST_OP_OR:
+            //TO-DO
+            break;
         case AST_OP_DIF:
         case AST_OP_EQ:
         case AST_OP_GE:
         case AST_OP_LE:
         case AST_OP_GT:
         case AST_OP_LT:
+            //TO-DO
+            break;
+        case AST_OP_AND:
+        case AST_OP_OR:
         case AST_OP_NOT:
+            //TO-DO
+            break;
+
+
+
+
+            
         case AST_LIT_INTEGER:
         case AST_LIT_FLOAT:
         case AST_LIT_CHAR:
