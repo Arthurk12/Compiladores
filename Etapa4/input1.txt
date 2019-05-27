@@ -1,5 +1,7 @@
 ZZ UFRGS - Compiladores - Marcelo Johann - 2019/1
 
+int b = A;
+float z = A.B;
 byte a = O;
 byte 1 = I;
 int v [IO]: O O O O O O O O O O; 
@@ -7,7 +9,6 @@ int mat [IO];
 float f = IO.EE;
 byte c = 'x';
 byte x = DE;
-int x = DE;
 
 byte main ()
   {
@@ -41,7 +42,7 @@ byte main ()
   {};
   };
 
-byte incn ( byte x, byte n )
+byte incn ( byte n )
   {
   return x+n
   };

@@ -5,7 +5,6 @@ bool semanticError = false;
 
 void setDeclaration(AST *node){
     if(node == 0) return;
-
     int i;
     for(i=0; i<MAX_SONS; i++){
         setDeclaration(node->son[i]);
@@ -26,7 +25,7 @@ void setDeclaration(AST *node){
             else if(node->son[0]->type == AST_DATATYPE_INT)
                 node->symbol->datatype = DATATYPE_INT;
             else if(node->son[0]->type == AST_DATATYPE_FLOAT)
-                node->symbol->datatype = DATATYPE_FLOAT;
+                node->symbol->datatype = DATATYPE_FLOAT;            
 
             node->symbol->dec = true;
             node->datatype = node->symbol->datatype;
@@ -67,7 +66,6 @@ void setDeclaration(AST *node){
         default:
             break;
     }
-
 }
 
 void checkUndeclared(){
@@ -176,11 +174,11 @@ void checkOperands(AST* node){
             node->datatype = DATATYPE_STRING;
             break;        
         case AST_VAR_DECLARATION:
-            if(!isSameDatatype(node->son[0]->datatype, node->son[1]->datatype)){
+            if(!isSameDatatype(node->symbol->datatype, node->son[1]->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: must have the same datatype.\n", node->lineNumber);
                 semanticError = 1;
             }
-            node->datatype = node->son[0]->datatype;
+            node->datatype = node->symbol->datatype;
             break;
         case AST_VEC_DECLARATION:
             if(!isInt(node->son[1]->datatype)){
@@ -191,14 +189,14 @@ void checkOperands(AST* node){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
             }
-            node->datatype = node->son[0]->datatype;
+            node->datatype = node->symbol->datatype;
             break;
         case AST_VEC_DECLARATION_INI:
             if(!isInt(node->son[1]->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: index must be an integer.\n", node->son[1]->lineNumber);
                 semanticError = 1;
             }
-            if(!isSameDatatype(node->son[0]->datatype, node->son[2]->datatype)){
+            if(!isSameDatatype(node->symbol->datatype, node->son[2]->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: the elements of a vector must match it's type.\n", node->son[1]->lineNumber);
                 semanticError = 1;
             }
@@ -206,12 +204,14 @@ void checkOperands(AST* node){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
             }
-            node->datatype = node->son[0]->datatype;
+            node->datatype = node->symbol->datatype;
             break;
         case AST_FUNC_DECLARATION:
-            node->datatype = node->son[0]->datatype;
+            node->datatype = node->symbol->datatype;
             break;
         case AST_DATATYPE_BYTE:
+            
+            break;
         case AST_DATATYPE_FLOAT:
         case AST_DATATYPE_INT:
         case AST_FUNC_PARAM:
@@ -317,7 +317,7 @@ bool isFunction(int datatype){
 }
 
 bool isSameDatatype(int datatype1, int datatype2){
-    if(
+   if(
         (isInt(datatype1)&&isInt(datatype2))||
         (isFloat(datatype1)&&isFloat(datatype2))||
         (isBool(datatype1)&&isBool(datatype2))){
@@ -326,7 +326,6 @@ bool isSameDatatype(int datatype1, int datatype2){
     else{
         return false;
     }
-    
 }
 
 int basicDatatype(int datatype){
