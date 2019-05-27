@@ -84,6 +84,10 @@ void checkOperands(AST* node){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
             }
+            if(!isInt(node->son[0]->symbol->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s index must be an integer.\n", node->son[0]->lineNumber, node->son[0]->symbol->lit);
+                semanticError = 1;
+            }
             break;
         case AST_FUNCTION:
             if((node->symbol->type != TK_IDENTIFIER) || !isFunction(node->symbol->datatype)){
@@ -114,7 +118,7 @@ void checkOperands(AST* node){
 
 
 
-            
+
         case AST_LIT_INTEGER:
         case AST_LIT_FLOAT:
         case AST_LIT_CHAR:
