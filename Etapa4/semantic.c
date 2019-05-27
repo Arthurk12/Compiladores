@@ -99,7 +99,9 @@ void checkOperands(AST* node){
         case AST_OP_SUB:
         case AST_OP_MUL:
         case AST_OP_DIV:
-            if((isInt(node->son[0]->symbol->datatype))){
+            if(!isSameDatatype(node->son[0]->symbol->datatype, node->son[1]->symbol->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s and %s must have the same datatype.\n", node->lineNumber, node->son[0]->symbol->lit, node->son[1]->symbol->lit);
+                semanticError = 1;
             }
             break;
         case AST_OP_DIF:
