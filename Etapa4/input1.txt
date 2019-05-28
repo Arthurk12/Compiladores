@@ -12,8 +12,7 @@ byte x = DE;
 
 byte main ()
   {
-  a=f((((a+c)*A)-(IO*a)),b,"batata");
-  
+  f=O.I + A;
   a = C;
   v[a] = AO;
   print v[a];
@@ -45,4 +44,5 @@ byte main ()
 byte incn ( byte n )
   {
   return x+n
+  
   };

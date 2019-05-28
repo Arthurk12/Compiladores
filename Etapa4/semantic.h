@@ -23,7 +23,9 @@ bool isVariable(int datatype);
 bool isVector(int datatype);
 bool isFunction(int datatype);
 bool isSameDatatype(int datatype1, int datatype2);
+bool isCompatible(int var, int atrib);
 
 int basicDatatype(int datatype);
+int getDatatype(int datatype1, int datatype2);
 
 #endif

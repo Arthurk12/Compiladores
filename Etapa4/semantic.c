@@ -130,15 +130,11 @@ void checkOperands(AST* node){
         case AST_OP_SUB:
         case AST_OP_MUL:
         case AST_OP_DIV:
-            if(!isSameDatatype(node->son[0]->datatype, node->son[1]->datatype)){
-                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s and %s must have the same datatype.\n", node->lineNumber, node->son[0]->symbol->lit, node->son[1]->symbol->lit);
+            node->datatype = getDatatype(node->son[0]->datatype, node->son[1]->datatype);
+            if(node->datatype == NO_DATATYPE){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: operands not compatible.\n", node->lineNumber);
                 semanticError = 1;
             }
-            else if(isBool(node->son[0]->datatype)){
-                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: can't use boolean.\n", node->lineNumber);
-                semanticError = 1;
-            }
-            node->datatype = basicDatatype(node->son[0]->datatype);
             break;
         case AST_OP_DIF:
         case AST_OP_EQ:
@@ -146,6 +142,16 @@ void checkOperands(AST* node){
         case AST_OP_LE:
         case AST_OP_GT:
         case AST_OP_LT:
+            if(isBool(node->son[0]->datatype)&&isBool(node->son[1]->datatype)){
+                node->datatype = DATATYPE_BOOL;
+                break;
+            }
+            else if(getDatatype(node->son[0]->datatype, node->son[1]->datatype) == NO_DATATYPE){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: operands not compatible.\n", node->lineNumber);
+                semanticError = 1;
+            }
+            node->datatype = DATATYPE_BOOL;
+            break;
         case AST_OP_AND:
         case AST_OP_OR:
             if(!isSameDatatype(node->son[0]->datatype, node->son[1]->datatype)){
@@ -177,8 +183,9 @@ void checkOperands(AST* node){
             node->datatype = DATATYPE_STRING;
             break;        
         case AST_VAR_DECLARATION:
-            if(!isSameDatatype(node->symbol->datatype, node->son[1]->datatype)){
-                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: must have the same datatype.\n", node->lineNumber);
+        case AST_ATRIB:
+            if(!isCompatible(node->symbol->datatype, node->son[1]->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: must be compatible.\n", node->lineNumber);
                 semanticError = 1;
             }
             node->datatype = node->symbol->datatype;
@@ -199,8 +206,8 @@ void checkOperands(AST* node){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: index must be an integer.\n", node->son[1]->lineNumber);
                 semanticError = 1;
             }
-            if(!isSameDatatype(node->symbol->datatype, node->son[2]->datatype)){
-                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: the elements of a vector must match it's type.\n", node->son[1]->lineNumber);
+            if(!isCompatible(node->symbol->datatype, node->son[2]->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: the elements of a vector must be compatible.\n", node->son[1]->lineNumber);
                 semanticError = 1;
             }
             if(!isVector(node->symbol->datatype)){
@@ -221,34 +228,106 @@ void checkOperands(AST* node){
         case AST_BLOCK:
             node->datatype = node->son[0]->datatype;
             break;
+        case AST_CMDLIST:
+        case AST_CMDRESTO:
+            if((node->son[0]==0)&&(node->son[1]==0)){
+                node->datatype = NO_DATATYPE;
+            }
+            else if(node->son[0]==0){
+                node->datatype = node->son[1]->datatype;
+            }
+            else if(node->son[1]==0){
+                node->datatype = node->son[0]->datatype;
+            }
+            else{
+                if(node->son[0]->type==AST_CMD_RETURN){
+                    if(node->son[1]->type==AST_CMD_RETURN){
+                        if(isBool(node->son[0]->datatype)&&isBool(node->son[1]->datatype)){
+                            node->datatype = DATATYPE_BOOL;
+                        }
+                        else{
+                            node->datatype = getDatatype(node->son[0]->datatype, node->son[1]->datatype);
+                            if(node->datatype==NO_DATATYPE){
+                                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: invalid return type.\n", node->lineNumber);
+                                semanticError = 1;
+                            }
+                        }
+                    }
+                    else{
+                        node->datatype = node->son[0]->datatype;
+                    }
+                }
+                else if(node->son[1]->type==AST_CMD_RETURN){
+                    node->datatype = node->son[1]->datatype;
+                }
+                else{
+                    node->datatype = NO_DATATYPE;
+                }
+            }
+            break;
+        case AST_CMD_RETURN:
+            node->datatype = node->son[0]->datatype;
+            break;
+        case AST_CMD_IF:
+        case AST_CMD_IF_ELSE:
+        case AST_CMD_LOOP:
+            if(!isBool(node->son[0]->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: expression must be boolean.\n", node->lineNumber);
+                semanticError = 1;
+            }
+            break;
+        case AST_VEC_POS_ATRIB:
+            if(node->symbol == 0){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: No symbol.\n", node->lineNumber);
+                semanticError = 1;
+                break;
+            }
+            if((node->symbol->type != TK_IDENTIFIER) || !isVector(node->symbol->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
+                semanticError = 1;
+            }
+            if(!isCompatible(node->symbol->datatype, node->son[1]->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: must be compatible.\n", node->lineNumber);
+                semanticError = 1;
+            }
+            if(!isInt(node->son[0]->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: index must be an integer.\n", node->son[1]->lineNumber);
+                semanticError = 1;
+            }
+            node->datatype = node->symbol->datatype;
+            break;
+        case AST_INILIST:
+            if(node->son[0] == 0){
+                node->datatype = NO_DATATYPE;
+            }
+            else if(node->son[1] == 0){
+                node->datatype = node->son[0]->datatype;
+            }
+            else{
+                node->datatype = getDatatype(node->son[0]->datatype, node->son[1]->datatype);
+            }
+            break;
+        case AST_ARGRESTO:
+        case AST_ARGLIST:
+            if(node->son[0] == 0){
+                node->datatype = NO_DATATYPE;
+            }
+            else if(node->son[1] == 0){
+                node->datatype = node->son[0]->datatype;
+            }
+            else{
+                if(node->son[0]==NO_DATATYPE || node->son[1]==NO_DATATYPE)
+                    node->datatype = NO_DATATYPE;
+                else
+                    node->datatype = DATATYPE_STRING;
+            }
+            break;
         case AST_FUNC_PARAM:
         case AST_PARAMRESTO:
         case AST_FUNC_PARAMLIST:
         case AST_DECLIST:
-        
-        case AST_CMDLIST:
         case AST_CMD_READ:
-            break;
-
-        
-        
-        case AST_INILIST:
-        
-        
-        
-        
-        
-        case AST_CMD_RETURN:
-        case AST_CMD_IF:
-        case AST_CMD_IF_ELSE:
-        case AST_CMD_LEAP:
-        case AST_CMD_LOOP:
-        case AST_CMDRESTO:
-        case AST_ATRIB:
-        case AST_VEC_POS_ATRIB:
-        case AST_ARGRESTO:
-        case AST_ARGLIST:
-        
+        case AST_CMD_LEAP:       
         default:
             break;
 	}
@@ -344,6 +423,28 @@ bool isSameDatatype(int datatype1, int datatype2){
     }
 }
 
+bool isCompatible(int var, int atrib){
+    if(isFloat(var)){
+        if(isFloat(atrib)||isInt(atrib))
+            return true;
+        else
+            return false;
+    }
+    else if (isInt(var)){
+        if(isInt(atrib))
+            return true;
+        else
+            return false;
+    }
+    else if(isBool(var)){
+        if(isBool(atrib))
+            return true;
+        else 
+            return false;
+    }
+    return false;
+}
+
 int basicDatatype(int datatype){
     if(isInt(datatype))
         return DATATYPE_INT;
@@ -355,5 +456,11 @@ int basicDatatype(int datatype){
 }
 
 int getDatatype(int datatype1, int datatype2){
-
+    if((!isInt(datatype1)&&!isFloat(datatype1))||(!isInt(datatype2)&&!isFloat(datatype2))){
+        return NO_DATATYPE;
+    }
+    else if(isFloat(datatype1)||isFloat(datatype2)){
+        return DATATYPE_FLOAT;
+    }
+    return DATATYPE_INT;
 }
