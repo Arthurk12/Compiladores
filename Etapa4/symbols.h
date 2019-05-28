@@ -64,7 +64,7 @@ IAN FISCHER SCHILLING - 00275603
 
 
 
-//HASH DATATYPES
+//DATATYPES
 #define NO_DATATYPE             0
 #define DATATYPE_BYTE           1
 #define DATATYPE_INT            2

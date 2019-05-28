@@ -162,12 +162,15 @@ void checkOperands(AST* node){
             node->datatype = DATATYPE_BOOL;
             break;
         case AST_LIT_INTEGER:
+        case AST_DATATYPE_INT:
             node->datatype = DATATYPE_INT;
             break;
         case AST_LIT_FLOAT:
+        case AST_DATATYPE_FLOAT:
             node->datatype = DATATYPE_FLOAT;
             break;
         case AST_LIT_CHAR:
+        case AST_DATATYPE_BYTE:
             node->datatype = DATATYPE_BYTE;
             break;
         case AST_LIT_STRING:
@@ -208,20 +211,33 @@ void checkOperands(AST* node){
             break;
         case AST_FUNC_DECLARATION:
             node->datatype = node->symbol->datatype;
+            break; 
+        case AST_CMD_PRINT:
+            if(node->son[0]->datatype == NO_DATATYPE){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: can't print this.\n", node->lineNumber);
+                semanticError = 1;
+            }
             break;
-        case AST_DATATYPE_BYTE:
-            
-            break;
-        case AST_DATATYPE_FLOAT:
-        case AST_DATATYPE_INT:
-        case AST_FUNC_PARAM:
-        case AST_DECLIST:
-        case AST_INILIST:
-        case AST_FUNC_PARAMLIST:
         case AST_BLOCK:
+            node->datatype = node->son[0]->datatype;
+            break;
+        case AST_FUNC_PARAM:
+        case AST_PARAMRESTO:
+        case AST_FUNC_PARAMLIST:
+        case AST_DECLIST:
+        
         case AST_CMDLIST:
         case AST_CMD_READ:
-        case AST_CMD_PRINT:
+            break;
+
+        
+        
+        case AST_INILIST:
+        
+        
+        
+        
+        
         case AST_CMD_RETURN:
         case AST_CMD_IF:
         case AST_CMD_IF_ELSE:
@@ -232,7 +248,7 @@ void checkOperands(AST* node){
         case AST_VEC_POS_ATRIB:
         case AST_ARGRESTO:
         case AST_ARGLIST:
-        case AST_PARAMRESTO:
+        
         default:
             break;
 	}
@@ -336,4 +352,8 @@ int basicDatatype(int datatype){
     if(isBool(datatype))
         return DATATYPE_BOOL;
     return NO_DATATYPE;
+}
+
+int getDatatype(int datatype1, int datatype2){
+
 }
