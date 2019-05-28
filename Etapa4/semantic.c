@@ -2,9 +2,12 @@
 #include "semantic.h"
 
 bool semanticError = false;
+AST* rootNode = 0;
 
 void setDeclaration(AST *node){
     if(node == 0) return;
+    if(rootNode == 0)
+                rootNode = node;
     int i;
     for(i=0; i<MAX_SONS; i++){
         setDeclaration(node->son[i]);
@@ -74,13 +77,11 @@ void checkUndeclared(){
 }
 
 void checkOperands(AST* node){
-	int i;
-	int err;
-
 	if (node == 0 ){
         return;
     }
     
+    int i;
 	for ( i = 0; i < MAX_SONS; i++){
         checkOperands(node->son[i]);
     }
@@ -124,6 +125,11 @@ void checkOperands(AST* node){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
             }
+            AST* aux = getFunction(rootNode, node->symbol->lit);
+            if(!checkFunctionParameters(aux->son[1], node->son[0])){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: function parameters wrong.\n", node->lineNumber);
+                semanticError = 1;
+            }
             node->datatype = node->symbol->datatype;
             break;
         case AST_OP_ADD:
@@ -155,14 +161,14 @@ void checkOperands(AST* node){
         case AST_OP_AND:
         case AST_OP_OR:
             if(!isSameDatatype(node->son[0]->datatype, node->son[1]->datatype)){
-                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s and %s must have the same datatype.\n", node->lineNumber, node->son[0]->symbol->lit, node->son[1]->symbol->lit);
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: must be compatible.\n", node->lineNumber);
                 semanticError = 1;
             }
             node->datatype = DATATYPE_BOOL;
             break;
         case AST_OP_NOT:
             if(node->son[0]->datatype == NO_DATATYPE){
-                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s has no datatype.\n", node->lineNumber, node->son[0]->symbol->lit);
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: must be compatible.\n", node->lineNumber);
                 semanticError = 1;
             }
             node->datatype = DATATYPE_BOOL;
@@ -184,7 +190,12 @@ void checkOperands(AST* node){
             break;        
         case AST_VAR_DECLARATION:
         case AST_ATRIB:
-            if(!isCompatible(node->symbol->datatype, node->son[1]->datatype)){
+            if(node->symbol == 0){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: No symbol.\n", node->lineNumber);
+                semanticError = 1;
+                break;
+            }
+            if(!isCompatible(node->symbol->datatype, node->son[0]->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: must be compatible.\n", node->lineNumber);
                 semanticError = 1;
             }
@@ -194,6 +205,11 @@ void checkOperands(AST* node){
             if(!isInt(node->son[1]->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: index must be an integer.\n", node->son[1]->lineNumber);
                 semanticError = 1;
+            }
+            if(node->symbol == 0){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: No symbol.\n", node->lineNumber);
+                semanticError = 1;
+                break;
             }
             if(!isVector(node->symbol->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
@@ -206,6 +222,11 @@ void checkOperands(AST* node){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: index must be an integer.\n", node->son[1]->lineNumber);
                 semanticError = 1;
             }
+            if(node->symbol == 0){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: No symbol.\n", node->lineNumber);
+                semanticError = 1;
+                break;
+            }
             if(!isCompatible(node->symbol->datatype, node->son[2]->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: the elements of a vector must be compatible.\n", node->son[1]->lineNumber);
                 semanticError = 1;
@@ -217,6 +238,15 @@ void checkOperands(AST* node){
             node->datatype = node->symbol->datatype;
             break;
         case AST_FUNC_DECLARATION:
+            if(node->symbol == 0){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: No symbol.\n", node->lineNumber);
+                semanticError = 1;
+                break;
+            }
+            if(!isCompatible(node->symbol->datatype, node->son[2]->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: no function return / wrong type.\n", node->lineNumber);
+                semanticError = 1;
+            }
             node->datatype = node->symbol->datatype;
             break; 
         case AST_CMD_PRINT:
@@ -240,29 +270,14 @@ void checkOperands(AST* node){
                 node->datatype = node->son[0]->datatype;
             }
             else{
-                if(node->son[0]->type==AST_CMD_RETURN){
-                    if(node->son[1]->type==AST_CMD_RETURN){
-                        if(isBool(node->son[0]->datatype)&&isBool(node->son[1]->datatype)){
-                            node->datatype = DATATYPE_BOOL;
-                        }
-                        else{
-                            node->datatype = getDatatype(node->son[0]->datatype, node->son[1]->datatype);
-                            if(node->datatype==NO_DATATYPE){
-                                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: invalid return type.\n", node->lineNumber);
-                                semanticError = 1;
-                            }
-                        }
-                    }
-                    else{
-                        node->datatype = node->son[0]->datatype;
-                    }
-                }
-                else if(node->son[1]->type==AST_CMD_RETURN){
-                    node->datatype = node->son[1]->datatype;
-                }
-                else{
+                if(node->son[0]->datatype==NO_DATATYPE && node->son[1]->datatype==NO_DATATYPE)
                     node->datatype = NO_DATATYPE;
-                }
+                else if(node->son[0]->datatype==NO_DATATYPE)
+                    node->datatype = node->son[1]->datatype;
+                else if(node->son[1]->datatype==NO_DATATYPE)
+                    node->datatype = node->son[0]->datatype;
+                else
+                    node->datatype = getDatatype(node->son[0]->datatype, node->son[1]->datatype);
             }
             break;
         case AST_CMD_RETURN:
@@ -322,10 +337,10 @@ void checkOperands(AST* node){
                     node->datatype = DATATYPE_STRING;
             }
             break;
+        case AST_DECLIST:
         case AST_FUNC_PARAM:
         case AST_PARAMRESTO:
         case AST_FUNC_PARAMLIST:
-        case AST_DECLIST:
         case AST_CMD_READ:
         case AST_CMD_LEAP:       
         default:
@@ -463,4 +478,32 @@ int getDatatype(int datatype1, int datatype2){
         return DATATYPE_FLOAT;
     }
     return DATATYPE_INT;
+}
+
+AST* getFunction(AST* rnode, char* lit){
+    if(rnode == 0 || rnode->son[0]==0)
+        return 0;
+    if( strcmp(rnode->son[0]->symbol->lit, lit) == 0 ){
+        return rnode->son[0];
+    }
+    return getFunction(rnode->son[1], lit);
+}
+
+bool checkFunctionParameters(AST* fun, AST* node){
+    if(fun == 0){
+        if(node == 0)
+            return true;
+        else
+            return false;
+    }
+    else if(node == 0){
+        return false;
+    }
+    if(!isCompatible(fun->son[0]->datatype, node->son[0]->datatype)){
+        return false;
+    }
+    else{
+        return checkFunctionParameters(fun->son[1], node->son[1]);
+    }
+    
 }
