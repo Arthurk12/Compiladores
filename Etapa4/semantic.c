@@ -85,7 +85,7 @@ void checkOperands(AST* node){
 	for ( i = 0; i < MAX_SONS; i++){
         checkOperands(node->son[i]);
     }
-    fprintf(stderr, "%i \n", node->type);
+
 	switch(node->type){
         case AST_TK_IDENTIFIER:
             if(node->symbol == 0){
@@ -195,6 +195,10 @@ void checkOperands(AST* node){
                 semanticError = 1;
                 break;
             }
+            if(isVector(node->symbol->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
+                semanticError = 1;
+            }
             if(!isCompatible(node->symbol->datatype, node->son[0]->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: must be compatible.\n", node->lineNumber);
                 semanticError = 1;
@@ -298,6 +302,10 @@ void checkOperands(AST* node){
                 break;
             }
             if((node->symbol->type != TK_IDENTIFIER) || !isVector(node->symbol->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
+                semanticError = 1;
+            }
+            if(node->son[1] == 0 ){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
             }
