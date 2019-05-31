@@ -195,7 +195,7 @@ void checkOperands(AST* node){
                 semanticError = 1;
                 break;
             }
-            if(isVector(node->symbol->datatype) || isFunction(node->symbol->datatype)){
+            if(!isVariable(node->symbol->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: %s doesn't match it's type.\n", node->lineNumber, node->symbol->lit);
                 semanticError = 1;
             }
