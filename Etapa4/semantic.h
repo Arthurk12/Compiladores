@@ -29,5 +29,6 @@ int basicDatatype(int datatype);
 int getDatatype(int datatype1, int datatype2);
 AST* getFunction(AST* rnode, char* lit);
 bool checkFunctionParameters(AST* fun, AST* node);
+bool isDeclistBlockCMDListorReturn(int type);
 
 #endif

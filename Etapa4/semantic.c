@@ -248,7 +248,7 @@ void checkOperands(AST* node){
                 break;
             }
             if(!isCompatible(node->symbol->datatype, node->son[2]->datatype)){
-                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: no function return / wrong type.\n", node->lineNumber);
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: no function return / wrong type. Datatype that reached: %d \n", node->lineNumber, node->son[2]->datatype);
                 semanticError = 1;
             }
             node->datatype = node->symbol->datatype;
@@ -261,39 +261,68 @@ void checkOperands(AST* node){
             break;
         case AST_BLOCK:
             node->datatype = node->son[0]->datatype;
+            fprintf(stderr, "[BLOCK] Type reached: %d \n", node->datatype);
             break;
         case AST_CMDLIST:
         case AST_CMDRESTO:
             if((node->son[0]==0)&&(node->son[1]==0)){
                 node->datatype = NO_DATATYPE;
             }
-            else if(node->son[0]==0){
+            else if(node->son[0]==0 && isDeclistBlockCMDListorReturn(node->son[1]->type)){
                 node->datatype = node->son[1]->datatype;
             }
-            else if(node->son[1]==0){
+            else if(node->son[1]==0 && isDeclistBlockCMDListorReturn(node->son[0]->type)){
                 node->datatype = node->son[0]->datatype;
             }
             else{
                 if(node->son[0]->datatype==NO_DATATYPE && node->son[1]->datatype==NO_DATATYPE)
                     node->datatype = NO_DATATYPE;
-                else if(node->son[0]->datatype==NO_DATATYPE)
+                else if(node->son[0]->datatype==NO_DATATYPE && isDeclistBlockCMDListorReturn(node->son[1]->type))
                     node->datatype = node->son[1]->datatype;
-                else if(node->son[1]->datatype==NO_DATATYPE)
+                else if(!isDeclistBlockCMDListorReturn(node->son[0]->type) && isDeclistBlockCMDListorReturn(node->son[1]->type))
+                    node->datatype = node->son[1]->datatype;
+                else if(node->son[1]->datatype==NO_DATATYPE && isDeclistBlockCMDListorReturn(node->son[0]->type))
                     node->datatype = node->son[0]->datatype;
+                else if(isDeclistBlockCMDListorReturn(node->son[0]->type) && !isDeclistBlockCMDListorReturn(node->son[1]->type))
+                    node->datatype = node->son[1]->datatype;
                 else
-                    node->datatype = getDatatype(node->son[0]->datatype, node->son[1]->datatype);
+                    if(isDeclistBlockCMDListorReturn(node->son[0]->type) && isDeclistBlockCMDListorReturn(node->son[1]->type))
+                        node->datatype = getDatatype(node->son[0]->datatype, node->son[1]->datatype);
+            fprintf(stderr, "[CMD] Type reached: %d type[0]: %d type[1]: %d \n", node->datatype, node->son[0]->type, node->son[1]->type);
             }
+            
             break;
         case AST_CMD_RETURN:
             node->datatype = node->son[0]->datatype;
             break;
         case AST_CMD_IF:
-        case AST_CMD_IF_ELSE:
         case AST_CMD_LOOP:
             if(!isBool(node->son[0]->datatype)){
                 fprintf(stderr, "[SEMANTIC ERROR] - Line %i: expression must be boolean.\n", node->lineNumber);
                 semanticError = 1;
             }
+            if(node->son[1] == 0)
+                node->datatype = NO_DATATYPE;
+            else if(isDeclistBlockCMDListorReturn(node->son[1]->type))
+                node->datatype = node->son[1]->datatype;
+            break;
+        case AST_CMD_IF_ELSE:
+            if(!isBool(node->son[0]->datatype)){
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: expression must be boolean.\n", node->lineNumber);
+                semanticError = 1;
+            }
+            if(node->son[1] == 0 && node->son[2] == 0)
+                node->datatype = NO_DATATYPE;
+            else if(node->son[1] == 0 && isDeclistBlockCMDListorReturn(node->son[2]->type))
+                node->datatype = node->son[2]->datatype;
+            else if(node->son[2] == 0 && isDeclistBlockCMDListorReturn(node->son[1]->type))
+                node->datatype = node->son[1]->datatype;
+            else if(node->son[1]->datatype == NO_DATATYPE && isDeclistBlockCMDListorReturn(node->son[2]->type))
+                node->datatype = node->son[2]->datatype;
+            else if(node->son[2]->datatype == NO_DATATYPE && isDeclistBlockCMDListorReturn(node->son[1]->type))
+                node->datatype = node->son[1]->datatype;
+            else if(isDeclistBlockCMDListorReturn(node->son[1]->type) && isDeclistBlockCMDListorReturn(node->son[2]->type))
+                node->datatype = getDatatype(node->son[1]->datatype, node->son[2]->datatype);
             break;
         case AST_VEC_POS_ATRIB:
             if(node->symbol == 0){
@@ -514,4 +543,23 @@ bool checkFunctionParameters(AST* fun, AST* node){
         return checkFunctionParameters(fun->son[1], node->son[1]);
     }
     
+}
+
+bool isDeclistBlockCMDListorReturn(int type){
+    switch(type){
+        case AST_DECLIST:
+        case AST_FUNC_DECLARATION:
+        case AST_BLOCK:
+        case AST_CMDLIST:
+        case AST_CMDRESTO:
+        case AST_CMD_IF:
+        case AST_CMD_IF_ELSE:
+        case AST_CMD_LOOP:
+        case AST_CMD_RETURN:
+            return true;
+            break;
+        default:
+            return false;
+            break;
+    }
 }
