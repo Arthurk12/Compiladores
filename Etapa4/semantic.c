@@ -19,7 +19,7 @@ void setDeclaration(AST *node){
         case AST_VAR_DECLARATION:
         case AST_FUNC_PARAM:
             if(node->symbol->dec == true){
-                fprintf(stderr, "Semantic Error: '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
+                fprintf(stderr, "[SEMANTIC ERROR] - '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
                 semanticError = true;
                 break;
             }
@@ -36,7 +36,7 @@ void setDeclaration(AST *node){
         case AST_VEC_DECLARATION:
         case AST_VEC_DECLARATION_INI:
             if(node->symbol->dec == true){
-                fprintf(stderr, "Semantic Error: '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
+                fprintf(stderr, "[SEMANTIC ERROR] - '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
                 semanticError = true;
                 break;
             }
@@ -52,7 +52,7 @@ void setDeclaration(AST *node){
             break;
         case AST_FUNC_DECLARATION:
             if(node->symbol->dec == true){
-                fprintf(stderr, "Semantic Error: '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
+                fprintf(stderr, "[SEMANTIC ERROR] - '%s' redeclared on line %i\n", node->symbol->lit, node->lineNumber);
                 semanticError = true;
                 break;
             }
@@ -248,7 +248,7 @@ void checkOperands(AST* node){
                 break;
             }
             if(!isCompatible(node->symbol->datatype, node->son[2]->datatype)){
-                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: no function return / wrong type. Datatype that reached: %d \n", node->lineNumber, node->son[2]->datatype);
+                fprintf(stderr, "[SEMANTIC ERROR] - Line %i: no function return / wrong type.\n", node->lineNumber);
                 semanticError = 1;
             }
             node->datatype = node->symbol->datatype;
@@ -261,7 +261,6 @@ void checkOperands(AST* node){
             break;
         case AST_BLOCK:
             node->datatype = node->son[0]->datatype;
-            fprintf(stderr, "[BLOCK] Type reached: %d \n", node->datatype);
             break;
         case AST_CMDLIST:
         case AST_CMDRESTO:
@@ -288,7 +287,6 @@ void checkOperands(AST* node){
                 else
                     if(isDeclistBlockCMDListorReturn(node->son[0]->type) && isDeclistBlockCMDListorReturn(node->son[1]->type))
                         node->datatype = getDatatype(node->son[0]->datatype, node->son[1]->datatype);
-            fprintf(stderr, "[CMD] Type reached: %d type[0]: %d type[1]: %d \n", node->datatype, node->son[0]->type, node->son[1]->type);
             }
             
             break;

@@ -71,7 +71,7 @@ bool hashCheckUndeclared(){
 	for (i = 0; i < HASHSIZE; i++){
 			for( node = HashTable[i]; node; node = node->next){
 				if (node->dec == false && node->type == TK_IDENTIFIER){
-					fprintf(stderr, "Semantic Error: '%s' wasn't declared.\n",node->lit);
+					fprintf(stderr, "[SEMANTIC ERROR] - '%s' wasn't declared.\n", node->lit);
 					error = true;
 				}
 			}
