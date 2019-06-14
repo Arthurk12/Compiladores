@@ -1,0 +1,48 @@
+ZZ UFRGS - Compiladores - Marcelo Johann - 2019/1
+
+int a = O;
+byte 1 = O;
+int v [IO]: O O O O O O O O O O; 
+int mat [IO]; 
+float f = IO.EE;
+byte c = 'x';
+byte x = DE;
+
+byte main ()
+  {
+  
+  a = C;
+  v[a] = AO;
+  print v[a];
+	
+  print "Digite um numero: \n";
+  read a;
+  loop (1<IO)
+    {
+	1=incn(I+A, O);
+    };
+
+  print "Incrementado algumas vezes fica ",a,"\n";
+
+  if (a==E) then 
+    print "Parou no meio\n";
+
+  if ( a==II or a== IC ) then
+    print "Var a ficou II ou IC\n";
+	
+  if (a==IO) then else
+    ;
+  ;;;
+  {;};
+  {};
+  return x;
+  };
+
+byte incn ( byte n, int j )
+  {
+  return x+n
+  };
+
+
+  
+
