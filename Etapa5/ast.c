@@ -19,6 +19,12 @@ AST *astCreate(int type, hashNode *symbol_node, AST *s0, AST *s1, AST *s2, AST *
 }
 
 void astPrint(AST *node, int level){
+    fprintf(stderr, "\n========================================AST PRINT========================================\n");
+    astPrintRec(node, level);
+    fprintf(stderr, "=========================================================================================\n");
+}
+
+void astPrintRec(AST *node, int level){
 
     int i;
     if(node == 0)return;
@@ -128,7 +134,7 @@ void astPrint(AST *node, int level){
     level++;
 
     for(i=0; i<MAX_SONS; i++)
-        astPrint(node->son[i], level);
+        astPrintRec(node->son[i], level);
     
 }
 
