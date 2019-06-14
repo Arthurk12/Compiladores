@@ -78,4 +78,10 @@ IAN FISCHER SCHILLING - 00275603
 #define DATATYPE_BOOL           10
 #define DATATYPE_STRING         11
 
+//TACS
+#define TAC_SYMBOL              1
+#define TAC_SYMBOL_VEC          2
+#define TAC_SYMBOL_LIT          3
+#define TAC_SYMBOL_LIT_STRING   4
+
 #endif
