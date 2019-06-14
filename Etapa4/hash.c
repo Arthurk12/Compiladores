@@ -56,11 +56,11 @@ hashNode* hashInsert(int type, char *lit){
 void hashPrint(){
 	int i=0;
 	hashNode *node;
-	
+	printf("\n========================================HASH PRINT========================================\n");
 	for(i=0; i<HASHSIZE; i++)
 		for(node = HashTable[i]; node!=0; node=node->next)
 			printf("Hash_Table_Node[%d]: %s  -> %i |%i|\n", i, node->lit, node->type, node->datatype);
-
+	printf("=========================================================================================\n");
 }
 
 bool hashCheckUndeclared(){

@@ -26,6 +26,7 @@ typedef struct astnode{
 
 AST *astCreate(int type, hashNode *symbol_node, AST *s0, AST *s1, AST *s2, AST *s3);
 void astPrint(AST *node, int level);
+void astPrintRec(AST *node, int level);
 void generateSource(AST *node, FILE *out);
 void closeFile(FILE *code);
 

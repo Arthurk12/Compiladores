@@ -21,8 +21,8 @@ int getLineNumber();
 int main(int argc, char** argv){
 	initMe();
 
-	if(argc < 3){
-		printf("Use o comando: ./etapa4 input.txt output.txt\n");
+	if(argc < 2){
+		printf("Use o comando: ./etapa4 input.txt\n");
 		exit(1);	
 	}
 	
@@ -31,23 +31,16 @@ int main(int argc, char** argv){
 		exit(2);
 	}
 
-	if((out = fopen(argv[2], "w+"))==0){
-		printf("Erro ao criar o arquivo de saida!");
-		exit(1);
-	}
-
 	while(isRunning()){
 		yyparse();
-
-		if(semanticError == false)
-			printf("Valid Program! \n");
-		else{
-			printf("Program has semantic errors!\n");
-			exit(4);
-		}
 	}
 		
-	hashPrint();
+	if(semanticError == false)
+		printf("Valid Program! \n");
+	else{
+		printf("Program has semantic errors!\n");
+		exit(4);
+	}
 	exit(0);
 }
 
