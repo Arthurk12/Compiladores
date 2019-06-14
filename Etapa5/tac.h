@@ -14,5 +14,9 @@ typedef struct tac{
     hashNode* symbol[3];
 } TAC;
 
+TAC tacCreate();
+void tacPrint();
+TAC tacJoin(TAC t1, TAC t2);
+
 
 #endif
