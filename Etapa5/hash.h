@@ -34,4 +34,7 @@ void hashPrint(void);
 hashNode* hashFind(char *lit, int address);
 bool hashCheckUndeclared(void);
 
+hashNode* makeTemp();
+hashNode* makeLabel();
+
 #endif

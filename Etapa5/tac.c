@@ -49,6 +49,7 @@ TAC* tacGenerate(AST* node){
             return tacCreate(TAC_SYMBOL, node->symbol, 0, 0);
             break;
         case AST_VECTOR:
+            return tacJoin(generated[0],tacCreate(TAC_VECTOR, node->symbol, generated[0]?generated[0]->res:0, 0));
             break;
         case AST_FUNCTION:
             break;
