@@ -78,3 +78,11 @@ bool hashCheckUndeclared(){
 	}
 	return error;
 }
+
+hashNode* makeTemp(){
+	static int serial=0;
+	static char name[100];
+
+	sprintf(name, "T3mph4shnod3f0rt4c_%d", serial++);
+	return hashInsert(SCALAR, name);
+}
