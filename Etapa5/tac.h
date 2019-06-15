@@ -15,8 +15,7 @@ typedef struct tac{
     hashNode* res;
     hashNode* op1;
     hashNode* op2;
-    struct TAC* prev;
-    struct TAC* next;
+    struct tac *next;
 } TAC;
 
 TAC* tacCreate(int code, hashNode* res, hashNode* op1, hashNode* op2);

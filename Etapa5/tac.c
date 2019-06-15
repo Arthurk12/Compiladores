@@ -7,18 +7,30 @@ TAC* tacCreate(int code, hashNode* res, hashNode* op1, hashNode* op2){
     newTAC->res = res;
     newTAC->op1 = op1;
     newTAC->op2 = op2;
-
+    newTAC->next = NULL;
     return newTAC;
 }
 
+TAC* tacJoin(TAC* t1, TAC* t2){
+    if(!t1) return t2;
+    if(!t2) return t1;
+
+    TAC* aux = t2;
+
+    while(aux->next){
+        aux = aux->next;
+    }
+    aux->next = t1;
+    return t2;
+}
+
 TAC* tacGenerate(AST* node){
+    if(!node){
+        return 0;
+    }
+
     int i;
     TAC* generated[MAX_SONS]; 
-
-    
-    if(!node){
-        return;
-    }
     
     for(i=0; i<MAX_SONS; i++){
         generated[i] = tacGenerate(node->son[i]);
@@ -29,15 +41,13 @@ TAC* tacGenerate(AST* node){
         case AST_LIT_INTEGER:
         case AST_LIT_FLOAT:
             return tacCreate(TAC_SYMBOL_LIT, node->symbol, 0, 0);
-        
+            break;
         case AST_LIT_STRING:
             return tacCreate(TAC_SYMBOL_LIT_STRING, node->symbol, 0, 0);
             break;
-        
         case AST_TK_IDENTIFIER:
             return tacCreate(TAC_SYMBOL, node->symbol, 0, 0);
             break;
-
         case AST_VECTOR:
             break;
         case AST_FUNCTION:
@@ -68,16 +78,12 @@ TAC* tacGenerate(AST* node){
             break;
         case AST_OP_NOT:
             break;
-        
         case AST_DATATYPE_INT:
             break;
-        
         case AST_DATATYPE_FLOAT:
             break;
-
         case AST_DATATYPE_BYTE:
-            break;
-                
+            break;  
         case AST_VAR_DECLARATION:
             break;
         case AST_ATRIB:
@@ -128,17 +134,4 @@ TAC* tacGenerate(AST* node){
             break;
 	}
 
-}
-
-TAC* tacJoin(TAC* t1, TAC* t2){
-    TAC* aux = t2;
-
-    if(!t1) return t2;
-    if(!t2) return t1;
-
-    while(aux->prev){
-        aux = aux->prev;
-    }
-    aux->prev = t1;
-    return t2;
 }
