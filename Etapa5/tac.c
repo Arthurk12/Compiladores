@@ -51,33 +51,46 @@ TAC* tacGenerate(AST* node){
         case AST_VECTOR:
             return tacJoin(generated[0],tacCreate(TAC_VECTOR, node->symbol, generated[0]?generated[0]->res:0, 0));
             break;
-        case AST_FUNCTION:
-            break;
         case AST_OP_ADD:
+            return makeOP(TAC_ADD, generated[0], generated[1]);
             break;
         case AST_OP_SUB:
+            return makeOP(TAC_SUB, generated[0], generated[1]);
             break;
         case AST_OP_MUL:
+            return makeOP(TAC_MUL, generated[0], generated[1]);
             break;
         case AST_OP_DIV:
+            return makeOP(TAC_DIV, generated[0], generated[1]);
             break;
         case AST_OP_DIF:
+            return makeOP(TAC_DIF, generated[0], generated[1]);
             break;
         case AST_OP_EQ:
+            return makeOP(TAC_EQ, generated[0], generated[1]);
             break;
         case AST_OP_GE:
+            return makeOP(TAC_GE, generated[0], generated[1]);
             break;
         case AST_OP_LE:
+            return makeOP(TAC_LE, generated[0], generated[1]);
             break;
         case AST_OP_GT:
+            return makeOP(TAC_GT, generated[0], generated[1]);
             break;
         case AST_OP_LT:
+            return makeOP(TAC_LT, generated[0], generated[1]);
             break;
         case AST_OP_AND:
+            return makeOP(TAC_AND, generated[0], generated[1]);
             break;
         case AST_OP_OR:
+            return makeOP(TAC_OR, generated[0], generated[1]);
             break;
         case AST_OP_NOT:
+            return makeOP(TAC_NOT, generated[0], generated[1]);
+            break;
+        case AST_FUNCTION:
             break;
         case AST_DATATYPE_INT:
             break;
@@ -135,4 +148,9 @@ TAC* tacGenerate(AST* node){
             break;
 	}
 
+}
+
+TAC* makeOP(int code, TAC* res1, TAC* res2){
+    TAC* opTAC = tacCreate(code, makeTemp(), res1?res1->res:0, res2?res2->res:0);
+    return tacJoin(tacJoin(res2, res1),opTAC);
 }
