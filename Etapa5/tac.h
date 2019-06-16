@@ -20,6 +20,12 @@ typedef struct tac{
 
 TAC* tacCreate(int code, hashNode* res, hashNode* op1, hashNode* op2);
 TAC* tacJoin(TAC* t1, TAC* t2);
-TAC* tacGenerate(AST* node);
+TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration);
+TAC* makeOP(int code, TAC* res1, TAC* res2);
+TAC* makeIfThen(TAC* expr, TAC* cIf);
+TAC* makeIfThenElse(TAC* expr, TAC* cIf, TAC* cElse);
+TAC* makeLeap(hashNode* jumpLoop);
+TAC* makeLoop(TAC* expr, TAC* cLoop, hashNode* jumpLoop);
+
 void tacPrint();
 #endif

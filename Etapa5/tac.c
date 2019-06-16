@@ -24,16 +24,20 @@ TAC* tacJoin(TAC* t1, TAC* t2){
     return t1;
 }
 
-TAC* tacGenerate(AST* node){
+TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
     if(!node){
         return 0;
     }
 
     int i;
-    TAC* generated[MAX_SONS]; 
+    TAC* generated[MAX_SONS];
+
+    if(node->type == AST_CMD_LOOP){
+        jumpLoopIteration = makeLabel();
+    }
     
     for(i=0; i<MAX_SONS; i++){
-        generated[i] = tacGenerate(node->son[i]);
+        generated[i] = tacGenerate(node->son[i], jumpLoopIteration);
     }
 
     switch(node->type){
@@ -121,29 +125,30 @@ TAC* tacGenerate(AST* node){
         case AST_CMD_READ:
             return tacCreate(TAC_READ, node->symbol, 0, 0);
             break;
-        
-        
-
-
-        
-
-
-
-
-        case AST_FUNCTION:
+        case AST_CMD_IF:
+            return makeIfThen(generated[0], generated[1]);
             break;
+        case AST_CMD_IF_ELSE:
+            return makeIfThenElse(generated[0], generated[1], generated[2]);
+            break;
+        case AST_CMD_LOOP:
+            return makeLoop(generated[0], generated[1], jumpLoopIteration);
+            break;
+        case AST_CMD_LEAP:
+            return makeLeap(jumpLoopIteration);
+            break;
+        case AST_FUNCTION:
+            
+            break;
+
+
         case AST_ATRIB:
             break;
         case AST_FUNC_DECLARATION:
             break; 
-        
-            break;
-        case AST_CMD_IF:
-            break;
-        case AST_CMD_LOOP:
-            break;
-        case AST_CMD_IF_ELSE:
-            break;
+
+
+
         case AST_VEC_POS_ATRIB:
             break;
         case AST_INILIST:
@@ -152,15 +157,7 @@ TAC* tacGenerate(AST* node){
             break;
         case AST_ARGLIST:
             break;
-        
-        
-            break;
         case AST_PARAMRESTO:
-            break;
-        
-            break;
-        
-        case AST_CMD_LEAP:
             break;
         default:
             break;
@@ -172,3 +169,45 @@ TAC* makeOP(int code, TAC* res1, TAC* res2){
     TAC* opTAC = tacCreate(code, makeTemp(), res1?res1->res:0, res2?res2->res:0);
     return tacJoin(tacJoin(res2, res1),opTAC);
 }
+
+TAC* makeIfThen(TAC* expr, TAC* cIf){
+    hashNode* newLabelCont = makeLabel();
+
+    TAC* ifThen = tacCreate(TAC_IF_THEN, expr?expr->res:0, newLabelCont, 0);
+    TAC* labelCont = tacCreate(TAC_LABEL, newLabelCont, 0, 0);
+    return tacJoin(tacJoin(tacJoin(expr, ifThen),cIf), labelCont);
+}
+//expr->ifThen->cIf->labelCont;
+
+TAC* makeIfThenElse(TAC* expr, TAC* cIf, TAC* cElse){
+    hashNode* newLabelElse = makeLabel();
+    hashNode* newLabelCont = makeLabel();
+
+    TAC* ifThenElse = tacCreate(TAC_IF_ELSE, expr?expr->res:0, newLabelElse, 0);
+    TAC* labelElse = tacCreate(TAC_LABEL, newLabelElse, 0, 0);
+    TAC* labelCont = tacCreate(TAC_LABEL, newLabelCont, 0, 0);
+    TAC* jump = tacCreate(TAC_JUMP, newLabelCont, 0, 0);
+    return tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(expr, ifThenElse),cIf),jump),labelElse),cElse),labelCont);
+}
+//expr->ifThenElse->cIf->jump->labelElse->cElse->labelCont;
+//                        |                       ^
+//                        -------------------------
+
+TAC* makeLeap(hashNode* jumpLoop){
+    TAC* leap = tacCreate(TAC_LEAP, jumpLoop, 0, 0);
+    TAC* jump = tacCreate(TAC_JUMP, jumpLoop, 0, 0);
+    return tacJoin(leap, jump);
+}
+//leap->jump
+
+TAC* makeLoop(TAC* expr, TAC* cLoop, hashNode* jumpLoop){
+    hashNode* newLabelCont = makeLabel();
+    hashNode* newLabelLoop = jumpLoop;
+
+    TAC* labelCont = tacCreate(TAC_LABEL, newLabelCont, 0, 0);
+    TAC* labelLoop = tacCreate(TAC_LABEL, newLabelLoop, 0, 0);
+    TAC* loop = tacCreate(TAC_LOOP, expr?expr->res:0, newLabelCont, newLabelLoop);
+    TAC* jump = tacCreate(TAC_JUMP, newLabelLoop, 0, 0);
+    return tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(labelLoop, expr), loop), cLoop), jump), labelCont);
+}
+//labelLoop->expr->loop->cLoop->jmp->labelCont;

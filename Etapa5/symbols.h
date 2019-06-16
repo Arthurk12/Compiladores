@@ -103,8 +103,15 @@ IAN FISCHER SCHILLING - 00275603
 #define TAC_PRINT               19
 #define TAC_RETURN              20
 #define TAC_READ                21
+#define TAC_IF_THEN             22
+#define TAC_IF_ELSE             23
+#define TAC_JUMP                24
+#define TAC_LEAP                25
+#define TAC_LOOP                26
+#define TAC_LABEL               27
 
 //temphash
-#define SYMBOL_SCALAR           100
+#define SYMBOL_VAR              100
+
 
 #endif
