@@ -15,13 +15,13 @@ TAC* tacJoin(TAC* t1, TAC* t2){
     if(!t1) return t2;
     if(!t2) return t1;
 
-    TAC* aux = t2;
+    TAC* aux = t1;
 
     while(aux->next){
         aux = aux->next;
     }
-    aux->next = t1;
-    return t2;
+    aux->next = t2;
+    return t1;
 }
 
 TAC* tacGenerate(AST* node){
@@ -49,7 +49,7 @@ TAC* tacGenerate(AST* node){
             return tacCreate(TAC_SYMBOL, node->symbol, 0, 0);
             break;
         case AST_VECTOR:
-            return tacJoin(generated[0],tacCreate(TAC_VECTOR, node->symbol, generated[0]?generated[0]->res:0, 0));
+            return tacJoin(tacCreate(TAC_VECTOR, node->symbol, generated[0]?generated[0]->res:0, 0), generated[0]);
             break;
         case AST_OP_ADD:
             return makeOP(TAC_ADD, generated[0], generated[1]);
@@ -90,33 +90,53 @@ TAC* tacGenerate(AST* node){
         case AST_OP_NOT:
             return makeOP(TAC_NOT, generated[0], generated[1]);
             break;
-        case AST_FUNCTION:
-            break;
         case AST_DATATYPE_INT:
-            break;
         case AST_DATATYPE_FLOAT:
-            break;
         case AST_DATATYPE_BYTE:
+            // NOP
             break;  
         case AST_VAR_DECLARATION:
+            return tacJoin(tacCreate(TAC_SYMBOL, node->symbol, 0, 0), generated[1]);
+            break;
+        case AST_VEC_DECLARATION:
+        case AST_VEC_DECLARATION_INI:
+            return tacCreate(TAC_SYMBOL_VEC, node->symbol, generated[1]?generated[1]->res : 0 , 0);
+            break;
+        case AST_CMD_PRINT:
+            return tacJoin(tacCreate(TAC_PRINT,0, 0, 0), generated[0]);
+            break;
+        case AST_BLOCK:
+            return generated[0];
+            break;
+        case AST_CMDLIST:
+        case AST_DECLIST:
+        case AST_FUNC_PARAMLIST:
+        case AST_FUNC_PARAM:
+        case AST_CMDRESTO:
+            return tacJoin(generated[0], generated[1]);
+            break;
+        case AST_CMD_RETURN:
+            return tacJoin(tacCreate(TAC_RETURN, generated[0]?generated[0]->res:0, 0, 0), generated[0]);
+            break;
+        case AST_CMD_READ:
+            return tacCreate(TAC_READ, node->symbol, 0, 0);
+            break;
+        
+        
+
+
+        
+
+
+
+
+        case AST_FUNCTION:
             break;
         case AST_ATRIB:
             break;
-        case AST_VEC_DECLARATION:
-            break;
-        case AST_VEC_DECLARATION_INI:
-            break;
         case AST_FUNC_DECLARATION:
             break; 
-        case AST_CMD_PRINT:
-            break;
-        case AST_BLOCK:
-            break;
-        case AST_CMDLIST:
-            break;
-        case AST_CMDRESTO:
-            break;
-        case AST_CMD_RETURN:
+        
             break;
         case AST_CMD_IF:
             break;
@@ -132,16 +152,14 @@ TAC* tacGenerate(AST* node){
             break;
         case AST_ARGLIST:
             break;
-        case AST_DECLIST:
-            break;
-        case AST_FUNC_PARAM:
+        
+        
             break;
         case AST_PARAMRESTO:
             break;
-        case AST_FUNC_PARAMLIST:
+        
             break;
-        case AST_CMD_READ:
-            break;
+        
         case AST_CMD_LEAP:
             break;
         default:
