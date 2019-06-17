@@ -258,8 +258,14 @@ void tacPrintSingle(TAC *tac){
     case TAC_JUMP:
         fprintf(stderr, "\nTAC_JUMP " );
         break;
+    case TAC_FUNC_CALL_BEGIN:
+        fprintf(stderr, "\nTAC_FUNC_CALL_BEGIN ");
+        break;
+    case TAC_FUNC_CALL_END:
+        fprintf(stderr, "\nTAC_FUNC_CALL_END ");
+        break;
     default:
-        fprintf(stderr, "\nTAC_UNKNOWN ");
+        fprintf(stderr, "\nTAC_UNKNOWN (%d) ", tac->code);
         break;
   }
   if (tac->res)
