@@ -1,8 +1,13 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "semantic.h"
 #include "functions.h"
+#include "ast.h"
+#include "semantic.h"
+
+
+
+
 
 
 void yyerror(char *msg);
@@ -53,7 +58,7 @@ FILE *out = NULL;
 
 %%
 
-programa    : declist                                                       {$$ = $1; hashPrint(); astPrint($1, 0); setDeclaration($1); checkUndeclared(); checkOperands($1);}
+programa    : declist                                                       {$$ = $1; hashPrint(); astPrint($1, 0); setDeclaration($1); checkUndeclared(); checkOperands($1); callTacFunction($1);}
             ;
 
 declist     : dec declist                                                   {$$ = astCreate(AST_DECLIST, 0, $1, $2, 0, 0);}

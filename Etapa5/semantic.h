@@ -7,9 +7,10 @@ IAN FISCHER SCHILLING - 00275603
 #define SEMANTIC_HEADER
 
 #include <stdio.h>
+#include <stdbool.h>
 #include "ast.h"
 #include "y.tab.h"
-#include<stdbool.h>
+
 
 
 void setDeclaration(AST *node);

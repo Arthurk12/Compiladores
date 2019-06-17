@@ -7,9 +7,13 @@ IAN FISCHER SCHILLING - 00275603
 #define AST_HEADER
 
 #include <stdio.h>
+#include <string.h>
+#include <time.h>
 #include "functions.h"
 #include "hash.h"
 #include "symbols.h"
+#include "y.tab.h"
+
 
 #define MAX_SONS 4
 

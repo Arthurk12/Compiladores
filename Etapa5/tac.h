@@ -7,8 +7,11 @@ IAN FISCHER SCHILLING - 00275603
 #define TAC_HEADER
 
 #include <stdio.h>
+#include "symbols.h"
 #include "hash.h"
 #include "ast.h"
+
+
 
 typedef struct tac{
     int code;
@@ -26,7 +29,9 @@ TAC* makeIfThen(TAC* expr, TAC* cIf);
 TAC* makeIfThenElse(TAC* expr, TAC* cIf, TAC* cElse);
 TAC* makeLeap(hashNode* jumpLoop);
 TAC* makeLoop(TAC* expr, TAC* cLoop, hashNode* jumpLoop);
+TAC* makeFunc(AST* node, TAC* param, TAC* cFunc);
 
 void tacPrintSingle(TAC *tac);
 void tacPrintForward(TAC *tac);
+
 #endif

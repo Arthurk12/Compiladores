@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
-
 #include "ast.h"
 
 AST *astCreate(int type, hashNode *symbol_node, AST *s0, AST *s1, AST *s2, AST *s3){

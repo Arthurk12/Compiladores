@@ -137,33 +137,42 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
         case AST_CMD_LEAP:
             return makeLeap(jumpLoopIteration);
             break;
-        case AST_FUNCTION:
-            return makeFuncCall();
-            break;
-
-
         case AST_ATRIB:
+            return tacJoin(tacCreate(TAC_ATRIB, node->symbol, generated[0]?generated[0]->res:0, 0), generated[0]);
+            break;
+        case AST_VEC_POS_ATRIB:
+            return tacJoin(tacCreate(TAC_ATRIB_VEC_POS, node->symbol, generated[0]?generated[0]->res:0, generated[1]?generated[1]->res:0), tacJoin(generated[0], generated[1]));
             break;
         case AST_FUNC_DECLARATION:
             return makeFunc(node, generated[1], generated[2]);
             break; 
 
 
-
-        case AST_VEC_POS_ATRIB:
-            break;
+// NAO TENHO TANTA CERTEZA QUE DAQUI PRA BAIXO ESTA CORRETO
         case AST_INILIST:
+            return tacJoin(generated[0], generated[1]);
             break;
         case AST_ARGRESTO:
+            return tacJoin(generated[0], generated[1]);
             break;
         case AST_ARGLIST:
+            return tacJoin(generated[0], generated[1]);
             break;
         case AST_PARAMRESTO:
+            return tacJoin(generated[0], generated[1]);
             break;
+
+//nao acabadas
+        case AST_FUNCTION:
+            //return makeFuncCall();
+            break;
+
         default:
+            return NULL;
             break;
 	}
 
+    return NULL;
 }
 
 void tacPrintSingle(TAC *tac){

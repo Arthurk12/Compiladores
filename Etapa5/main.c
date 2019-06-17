@@ -35,9 +35,9 @@ int main(int argc, char** argv){
 		yyparse();
 	}
 		
-	if(semanticError == false)
+	if(semanticError == false){
 		printf("Valid Program! \n");
-	else{
+	}else{
 		printf("Program has semantic errors!\n");
 		exit(4);
 	}

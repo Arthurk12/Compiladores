@@ -11,6 +11,7 @@ IAN FISCHER SCHILLING - 00275603
 #include <string.h>
 #include <stdbool.h>
 #include "symbols.h"
+#include "y.tab.h"
 
 
 #define HASHSIZE 997

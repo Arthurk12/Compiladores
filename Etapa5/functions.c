@@ -3,9 +3,8 @@ ARTHUR BÖCKMANN GROSSI - 00275607
 IAN FISCHER SCHILLING - 00275603
 */
 
-#include <stdio.h>
 #include "functions.h"
-#include "y.tab.h"
+
 
 
 int getLineNumber(){
@@ -38,4 +37,10 @@ char* trimQuotation(int type, char* lit){
 		return lit;
 	}
 	return trimmedLit;
+}
+
+void callTacFunction(AST* node){
+	if(semanticError==false){
+		tacPrintForward(tacGenerate(node, 0));
+	}
 }
