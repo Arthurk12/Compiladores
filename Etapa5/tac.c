@@ -93,11 +93,6 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
             break;
         case AST_OP_NOT:
             return makeOP(TAC_NOT, generated[0], generated[1]);
-            break;
-        case AST_DATATYPE_INT:
-        case AST_DATATYPE_FLOAT:
-        case AST_DATATYPE_BYTE:
-            // NOP
             break;  
         case AST_VAR_DECLARATION:
             return tacJoin(tacCreate(TAC_SYMBOL, node->symbol, 0, 0), generated[1]);
@@ -162,11 +157,12 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
             return tacJoin(generated[0], generated[1]);
             break;
 
-//nao acabadas
         case AST_FUNCTION:
-            //return makeFuncCall();
+            return makeFuncCall(node, generated[0]);
             break;
-
+        case AST_DATATYPE_INT:
+        case AST_DATATYPE_FLOAT:
+        case AST_DATATYPE_BYTE:
         default:
             return NULL;
             break;
@@ -346,3 +342,12 @@ TAC* makeFunc(AST* node, TAC* param, TAC* cFunc){
     return tacJoin(tacJoin(tacJoin(funcBeg, param), cFunc), funcEnd);
 }
 //func->param->labelFuncBegin->cFunc->return
+
+TAC* makeFuncCall(AST* node, TAC* listParam){
+    hashNode* labelFuncCallBegin = makeLabel();
+    hashNode* labelFuncCallEnd = makeLabel();
+
+    TAC* funcCallBeg = tacCreate(TAC_FUNC_CALL_BEGIN, node->symbol, labelFuncCallBegin, 0);
+    TAC* funcCallEnd = tacCreate(TAC_FUNC_CALL_END, node->symbol, labelFuncCallEnd, 0);
+    return tacJoin(tacJoin(funcCallBeg, listParam), funcCallEnd);
+}

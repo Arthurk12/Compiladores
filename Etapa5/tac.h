@@ -30,6 +30,7 @@ TAC* makeIfThenElse(TAC* expr, TAC* cIf, TAC* cElse);
 TAC* makeLeap(hashNode* jumpLoop);
 TAC* makeLoop(TAC* expr, TAC* cLoop, hashNode* jumpLoop);
 TAC* makeFunc(AST* node, TAC* param, TAC* cFunc);
+TAC* makeFuncCall(AST* node, TAC* listParam);
 
 void tacPrintSingle(TAC *tac);
 void tacPrintForward(TAC *tac);

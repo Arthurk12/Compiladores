@@ -113,6 +113,8 @@ IAN FISCHER SCHILLING - 00275603
 #define TAC_FUNC_END            29
 #define TAC_ATRIB               30
 #define TAC_ATRIB_VEC_POS       31
+#define TAC_FUNC_CALL_BEGIN     32
+#define TAC_FUNC_CALL_END       33
 
 //temphash
 #define SYMBOL_VAR              100
