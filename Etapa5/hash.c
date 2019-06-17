@@ -1,5 +1,4 @@
 #include "hash.h"
-#include "functions.h"
 #include "y.tab.h"
 
 void initMe(void) {
@@ -93,4 +92,21 @@ hashNode* makeLabel(){
 
 	sprintf(buffer, "L4belh4shnod3f0rt4c-%d", serial++);
 	return hashInsert(SYMBOL_VAR, buffer);
+}
+
+char* trimQuotation(int type, char* lit){
+	char *trimmedLit;
+
+	trimmedLit = calloc(strlen(lit-1), sizeof(char));
+
+	if(type == LIT_CHAR){
+		
+		strncpy(trimmedLit, &lit[1], 1);
+	}else if(type == LIT_STRING){
+
+		trimmedLit = strtok(lit, "\"");
+	}else{
+		return lit;
+	}
+	return trimmedLit;
 }

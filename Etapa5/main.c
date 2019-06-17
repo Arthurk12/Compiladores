@@ -5,8 +5,11 @@ IAN FISCHER SCHILLING - 00275603
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "functions.h"
+#include <stdio.h>
+#include "tac.h"
 #include "ast.h"
+#include "semantic.h"
+#include "y.tab.h"
 
 extern int yylex();
 extern int yyparse();
@@ -15,8 +18,8 @@ extern FILE *yyin;
 extern FILE *out;
 extern bool semanticError;
 
-int isRunning();
-int getLineNumber();
+//int isRunning();
+//int getLineNumber();
 
 int main(int argc, char** argv){
 	initMe();

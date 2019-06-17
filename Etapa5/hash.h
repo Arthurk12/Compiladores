@@ -37,5 +37,6 @@ bool hashCheckUndeclared(void);
 
 hashNode* makeTemp();
 hashNode* makeLabel();
+char* trimQuotation(int type, char* lit);
 
 #endif

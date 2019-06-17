@@ -1,14 +1,13 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "functions.h"
+#include <stdio.h>
+#include "tac.h"
 #include "ast.h"
 #include "semantic.h"
+#include "y.tab.h"
 
-
-
-
-
+extern bool semanticError;
 
 void yyerror(char *msg);
 int yylex();
@@ -58,7 +57,7 @@ FILE *out = NULL;
 
 %%
 
-programa    : declist                                                       {$$ = $1; hashPrint(); astPrint($1, 0); setDeclaration($1); checkUndeclared(); checkOperands($1); callTacFunction($1);}
+programa    : declist                                                       {$$ = $1; hashPrint(); astPrint($1, 0); setDeclaration($1); checkUndeclared(); checkOperands($1); if(semanticError==false){tacPrintForward(tacGenerate($1, 0));};}
             ;
 
 declist     : dec declist                                                   {$$ = astCreate(AST_DECLIST, 0, $1, $2, 0, 0);}

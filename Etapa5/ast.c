@@ -371,3 +371,14 @@ void generateSource(AST *node, FILE *out) {
 void closeFile(FILE *code){
     fclose(code);
 }
+
+int getLineNumber(){
+	return LineNumber;
+}
+
+int isRunning(){
+	if(Running)	
+		return 1;
+	else
+		return 0;
+}

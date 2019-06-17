@@ -1,5 +1,4 @@
 %{
-#include "functions.c"
 #include "hash.h"
 #include "y.tab.h"
 
