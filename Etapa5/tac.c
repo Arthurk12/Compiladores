@@ -138,13 +138,14 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
             return makeLeap(jumpLoopIteration);
             break;
         case AST_FUNCTION:
-            
+            return makeFuncCall();
             break;
 
 
         case AST_ATRIB:
             break;
         case AST_FUNC_DECLARATION:
+            return makeFunc(node, generated[1], generated[2]);
             break; 
 
 
@@ -165,17 +166,132 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
 
 }
 
+void tacPrintSingle(TAC *tac){
+  if(!tac)
+  {
+    return;
+  }
+  switch (tac->code)
+  {
+    case TAC_SYMBOL:
+		fprintf(stderr, "\nTAC_SYMBOL ");
+        break;
+    case TAC_SYMBOL_LIT:
+        fprintf(stderr, "\nTAC_SYMBOL_LIT ");
+	    break;
+    case TAC_SYMBOL_LIT_STRING:
+        fprintf(stderr, "\nTAC_SYMBOL_LIT_STRING ");
+	    break;
+    case TAC_ADD: 
+        fprintf(stderr, "\nTAC_ADD ");
+        break;
+    case TAC_SUB:
+        fprintf(stderr, "\nTAC_SUB ");
+        break;
+    case TAC_MUL:
+        fprintf(stderr, "\nTAC_MUL ");
+        break;
+    case TAC_DIV:
+        fprintf(stderr, "\nTAC_DIV ");
+        break;
+    case TAC_LT:
+        fprintf(stderr, "\nTAC_LESS ");
+        break;
+    case TAC_GT:
+        fprintf(stderr, "\nTAC_GREATER ");
+        break;
+    case TAC_AND:
+        fprintf(stderr, "\nTAC_AND ");
+        break;
+    case TAC_OR:    
+        fprintf(stderr, "\nTAC_OR ");
+        break;
+    case TAC_NOT:
+        fprintf(stderr, "\nTAC_NOT ");
+        break;
+    case TAC_LE:
+        fprintf(stderr, "\nTAC_LE ");
+        break;
+    case TAC_GE:
+        fprintf(stderr, "\nTAC_GE ");
+        break;
+    case TAC_EQ:
+        fprintf(stderr, "\nTAC_EQ ");
+        break;
+    case TAC_VECTOR:
+        fprintf(stderr, "\nTAC_ARRAY ");
+        break;
+    case TAC_SYMBOL_VEC :
+		return;
+    case TAC_IF_THEN:
+        fprintf(stderr, "\nTAC_IFZ ");
+        break;
+    case TAC_IF_ELSE:
+        fprintf(stderr, "\nTAC_IFZ_ELSE ");
+        break;
+    case TAC_LEAP:
+        fprintf(stderr, "\nTAC_LEAP ");
+        break;
+	  case TAC_LOOP:
+        fprintf(stderr, "\nTAC_LOOP ");
+        break;
+    case TAC_READ :
+        fprintf(stderr, "\nTAC_READ ");
+        break;
+    case TAC_PRINT :
+        fprintf(stderr, "\nTAC_PRINT ");
+        break;
+    case TAC_FUNC_BEGIN:
+        fprintf(stderr, "\nTAC_FUNC_BEGIN ");
+        break;
+    case TAC_FUNC_END:
+        fprintf(stderr, "\nTAC_FUNC_END ");
+        break;
+    case TAC_LABEL :
+        fprintf(stderr, "\nTAC_LABEL ");
+        break;
+    case TAC_JUMP:
+        fprintf(stderr, "\nTAC_JUMP " );
+        break;
+    default:
+        fprintf(stderr, "\nTAC_UNKNOWN ");
+        break;
+  }
+  if (tac->res)
+  {
+    fprintf(stderr, "%s ", tac->res->lit);
+  }
+  if (tac->op1)
+  {
+    fprintf(stderr, "%s ", tac->op1->lit);
+  }
+  if (tac->op2)
+  {
+    fprintf(stderr, "%s ", tac->op2->lit);
+  }
+}
+
+void tacPrintForward(TAC *tac){
+  if (!tac)
+  {
+    return;
+  }
+  tacPrintSingle(tac);
+  tacPrintForward(tac->next);
+}
+
 TAC* makeOP(int code, TAC* res1, TAC* res2){
     TAC* opTAC = tacCreate(code, makeTemp(), res1?res1->res:0, res2?res2->res:0);
-    return tacJoin(tacJoin(res2, res1),opTAC);
+    return tacJoin(opTAC, tacJoin(res1, res2));
 }
+//opTAC->res1->res2;
 
 TAC* makeIfThen(TAC* expr, TAC* cIf){
     hashNode* newLabelCont = makeLabel();
 
     TAC* ifThen = tacCreate(TAC_IF_THEN, expr?expr->res:0, newLabelCont, 0);
     TAC* labelCont = tacCreate(TAC_LABEL, newLabelCont, 0, 0);
-    return tacJoin(tacJoin(tacJoin(expr, ifThen),cIf), labelCont);
+    return tacJoin(expr, tacJoin(ifThen, tacJoin(cIf, labelCont)));
 }
 //expr->ifThen->cIf->labelCont;
 
@@ -187,7 +303,7 @@ TAC* makeIfThenElse(TAC* expr, TAC* cIf, TAC* cElse){
     TAC* labelElse = tacCreate(TAC_LABEL, newLabelElse, 0, 0);
     TAC* labelCont = tacCreate(TAC_LABEL, newLabelCont, 0, 0);
     TAC* jump = tacCreate(TAC_JUMP, newLabelCont, 0, 0);
-    return tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(expr, ifThenElse),cIf),jump),labelElse),cElse),labelCont);
+    return tacJoin(expr, tacJoin(ifThenElse, tacJoin(cIf, tacJoin(jump, tacJoin(labelElse, tacJoin(cElse, labelCont))))));
 }
 //expr->ifThenElse->cIf->jump->labelElse->cElse->labelCont;
 //                        |                       ^
@@ -208,6 +324,16 @@ TAC* makeLoop(TAC* expr, TAC* cLoop, hashNode* jumpLoop){
     TAC* labelLoop = tacCreate(TAC_LABEL, newLabelLoop, 0, 0);
     TAC* loop = tacCreate(TAC_LOOP, expr?expr->res:0, newLabelCont, newLabelLoop);
     TAC* jump = tacCreate(TAC_JUMP, newLabelLoop, 0, 0);
-    return tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(labelLoop, expr), loop), cLoop), jump), labelCont);
+    return tacJoin(labelLoop, tacJoin(expr, tacJoin(loop, tacJoin(cLoop, tacJoin(jump, labelCont)))));
 }
-//labelLoop->expr->loop->cLoop->jmp->labelCont;
+//labelLoop->expr->loop->cLoop->jump->labelCont;
+
+TAC* makeFunc(AST* node, TAC* param, TAC* cFunc){
+    hashNode* labelFuncBegin = makeLabel();
+    hashNode* labelFuncEnd = makeLabel();
+
+    TAC* funcBeg = tacCreate(TAC_FUNC_BEGIN, node->symbol, labelFuncBegin, 0);
+    TAC* funcEnd = tacCreate(TAC_FUNC_END, node->symbol, labelFuncEnd, 0);
+    return tacJoin(tacJoin(tacJoin(funcBeg, param), cFunc), funcEnd);
+}
+//func->param->labelFuncBegin->cFunc->return

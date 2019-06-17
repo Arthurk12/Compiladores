@@ -27,5 +27,6 @@ TAC* makeIfThenElse(TAC* expr, TAC* cIf, TAC* cElse);
 TAC* makeLeap(hashNode* jumpLoop);
 TAC* makeLoop(TAC* expr, TAC* cLoop, hashNode* jumpLoop);
 
-void tacPrint();
+void tacPrintSingle(TAC *tac);
+void tacPrintForward(TAC *tac);
 #endif

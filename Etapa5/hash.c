@@ -91,6 +91,6 @@ hashNode* makeLabel(){
 	static int serial=0;
 	static char buffer[100] = "";
 
-	sprintf(buffer, "L@belh4shnod3f0rt4c-%d", serial++);
+	sprintf(buffer, "L4belh4shnod3f0rt4c-%d", serial++);
 	return hashInsert(SYMBOL_VAR, buffer);
 }

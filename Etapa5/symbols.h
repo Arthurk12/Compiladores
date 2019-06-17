@@ -109,6 +109,8 @@ IAN FISCHER SCHILLING - 00275603
 #define TAC_LEAP                25
 #define TAC_LOOP                26
 #define TAC_LABEL               27
+#define TAC_FUNC_BEGIN          28
+#define TAC_FUNC_END            29
 
 //temphash
 #define SYMBOL_VAR              100
