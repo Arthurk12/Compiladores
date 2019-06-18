@@ -8,6 +8,7 @@ TAC* tacCreate(int code, hashNode* res, hashNode* op1, hashNode* op2){
     newTAC->op1 = op1;
     newTAC->op2 = op2;
     newTAC->next = NULL;
+    newTAC->num = -1;
     return newTAC;
 }
 
@@ -95,7 +96,7 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
             return makeOP(TAC_NOT, generated[0], generated[1]);
             break;  
         case AST_VAR_DECLARATION:
-            return tacJoin(tacCreate(TAC_ATRIB, node->symbol, generated[1]?generated[1]->res:0, 0),tacJoin(tacCreate(TAC_SYMBOL, node->symbol, 0, 0), generated[1]));
+            return tacJoin(tacCreate(TAC_SYMBOL, node->symbol, 0, 0),tacJoin(tacCreate(TAC_ATRIB, node->symbol, generated[1]?generated[1]->res:0, 0), generated[1]));
             break;
         case AST_VEC_DECLARATION:
             return tacJoin(tacCreate(TAC_VEC_DECLARATION, node->symbol, 0, 0), generated[1]);
@@ -146,10 +147,10 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
             return tacJoin(generated[0], generated[1]);
             break;
         case AST_ARGRESTO:
-            return tacJoin(generated[0], generated[1]);
+            return tacJoin(tacCreate(TAC_ARG, generated[0]?generated[0]->res:0, 0, 0), generated[1]);
             break;
         case AST_ARGLIST:
-            return tacJoin(generated[0], generated[1]);//tacJoin(tacCreate(AST_ARG, 0, generated[0]?generated[0]->res:0, generated[1]?generated[1]->res:0), generated[1]);
+            return tacJoin(generated[0], tacJoin(tacCreate(TAC_ARG, generated[0]?generated[0]->res:0, 0, 0), generated[1]));
             break;
         case AST_PARAMRESTO:
             return tacJoin(generated[0], generated[1]);
@@ -280,22 +281,20 @@ void tacPrintSingle(TAC *tac){
     case TAC_VEC_DECLARATION_END:
         fprintf(stderr, "\nTAC_VEC_DECLARATION_END ");
         break;
+    case TAC_ARG:
+        fprintf(stderr, "\nTAC_ARG ");
+        break;
     default:
         fprintf(stderr, "\nTAC_UNKNOWN (%d) ", tac->code);
         break;
   }
-  if (tac->res)
-  {
-    fprintf(stderr, "%s ", tac->res->lit);
-  }
-  if (tac->op1)
-  {
-    fprintf(stderr, "%s ", tac->op1->lit);
-  }
-  if (tac->op2)
-  {
-    fprintf(stderr, "%s ", tac->op2->lit);
-  }
+    if (tac->res)   fprintf(stderr, "%s ", tac->res->lit);
+
+    if (tac->op1)   fprintf(stderr, "%s ", tac->op1->lit);
+ 
+    if (tac->op2)   fprintf(stderr, "%s ", tac->op2->lit);
+
+    if (tac->num != -1)   fprintf(stderr, "%d ", tac->num);
 }
 
 void tacPrintForward(TAC *tac){
@@ -371,5 +370,17 @@ TAC* makeFuncCall(AST* node, TAC* listParam){
 
     TAC* funcCallBeg = tacCreate(TAC_FUNC_CALL_BEGIN, node->symbol, labelFuncCallBegin, 0);
     TAC* funcCallEnd = tacCreate(TAC_FUNC_CALL_END, node->symbol, labelFuncCallEnd, 0);
-    return tacJoin(tacJoin(funcCallBeg, listParam), funcCallEnd);
+    TAC* returnPointer = tacJoin(tacJoin(funcCallBeg, listParam), funcCallEnd);
+    TAC* funcParamListWalker = returnPointer;
+    int i = 0;
+    while(funcParamListWalker!=0 && (funcParamListWalker->code != TAC_FUNC_CALL_END)){
+        if(funcParamListWalker->code == TAC_ARG){
+            funcParamListWalker->op1 = node->symbol;
+            funcParamListWalker->num = i;
+            i++;
+        }
+        funcParamListWalker = funcParamListWalker->next;
+    }
+    
+    return returnPointer;
 }
