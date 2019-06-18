@@ -39,7 +39,7 @@ int main(int argc, char** argv){
 	}
 		
 	if(semanticError == false){
-		printf("Valid Program! \n");
+		printf("\nValid Program! \n");
 	}else{
 		printf("Program has semantic errors!\n");
 		exit(4);

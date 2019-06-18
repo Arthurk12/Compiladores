@@ -95,7 +95,7 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
             return makeOP(TAC_NOT, generated[0], generated[1]);
             break;  
         case AST_VAR_DECLARATION:
-            return tacJoin(tacCreate(TAC_SYMBOL, node->symbol, 0, 0), generated[1]);
+            return tacJoin(tacCreate(TAC_ATRIB, node->symbol, generated[1]?generated[1]->res:0, 0),tacJoin(tacCreate(TAC_SYMBOL, node->symbol, 0, 0), generated[1]));
             break;
         case AST_VEC_DECLARATION:
             return tacJoin(tacCreate(TAC_VEC_DECLARATION, node->symbol, 0, 0), generated[1]);
@@ -116,7 +116,7 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
             return tacJoin(generated[0], generated[1]);
             break;
         case AST_CMD_RETURN:
-            return tacJoin(tacCreate(TAC_RETURN, generated[0]?generated[0]->res:0, 0, 0), generated[0]);
+            return tacJoin(generated[0], tacCreate(TAC_RETURN, generated[0]?generated[0]->res:0, 0, 0));
             break;
         case AST_CMD_READ:
             return tacCreate(TAC_READ, node->symbol, 0, 0);
@@ -149,7 +149,7 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
             return tacJoin(generated[0], generated[1]);
             break;
         case AST_ARGLIST:
-            return tacJoin(generated[0], generated[1]);
+            return tacJoin(generated[0], generated[1]);//tacJoin(tacCreate(AST_ARG, 0, generated[0]?generated[0]->res:0, generated[1]?generated[1]->res:0), generated[1]);
             break;
         case AST_PARAMRESTO:
             return tacJoin(generated[0], generated[1]);
