@@ -80,17 +80,17 @@ bool hashCheckUndeclared(){
 
 hashNode* makeTemp(){
 	static int serial=0;
-	static char buffer[100] = "";
+	static char buffer[50] = "";
 
-	sprintf(buffer, "T3mph4shnod3f0rt4c-%d", serial++);
+	sprintf(buffer, "__temp%d", serial++);
 	return hashInsert(SYMBOL_VAR, buffer);
 }
 
 hashNode* makeLabel(){
 	static int serial=0;
-	static char buffer[100] = "";
+	static char buffer[50] = "";
 
-	sprintf(buffer, "L4belh4shnod3f0rt4c-%d", serial++);
+	sprintf(buffer, "__label%d", serial++);
 	return hashInsert(SYMBOL_VAR, buffer);
 }
 

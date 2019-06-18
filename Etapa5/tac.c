@@ -98,8 +98,9 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
             return tacJoin(tacCreate(TAC_SYMBOL, node->symbol, 0, 0), generated[1]);
             break;
         case AST_VEC_DECLARATION:
+            return tacJoin(tacCreate(TAC_VEC_DECLARATION, node->symbol, 0, 0), generated[1]);
         case AST_VEC_DECLARATION_INI:
-            return tacCreate(TAC_SYMBOL_VEC, node->symbol, generated[1]?generated[1]->res : 0 , 0);
+            return tacJoin(tacJoin(tacJoin(tacCreate(TAC_VEC_DECLARATION_INI, node->symbol, 0, 0), generated[1]), generated[2]), tacCreate(TAC_VEC_DECLARATION_END, 0, 0, 0));
             break;
         case AST_CMD_PRINT:
             return tacJoin(tacCreate(TAC_PRINT,0, 0, 0), generated[0]);
@@ -141,9 +142,6 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
         case AST_FUNC_DECLARATION:
             return makeFunc(node, generated[1], generated[2]);
             break; 
-
-
-// NAO TENHO TANTA CERTEZA QUE DAQUI PRA BAIXO ESTA CORRETO
         case AST_INILIST:
             return tacJoin(generated[0], generated[1]);
             break;
@@ -224,7 +222,7 @@ void tacPrintSingle(TAC *tac){
         fprintf(stderr, "\nTAC_EQ ");
         break;
     case TAC_VECTOR:
-        fprintf(stderr, "\nTAC_ARRAY ");
+        fprintf(stderr, "\nTAC_VECTOR ");
         break;
     case TAC_SYMBOL_VEC :
 		return;
@@ -263,6 +261,24 @@ void tacPrintSingle(TAC *tac){
         break;
     case TAC_FUNC_CALL_END:
         fprintf(stderr, "\nTAC_FUNC_CALL_END ");
+        break;
+    case TAC_ATRIB:
+        fprintf(stderr, "\nTAC_ATRIB ");
+        break;
+    case TAC_ATRIB_VEC_POS:
+        fprintf(stderr, "\nTAC_ATRIB_VEC_POS ");
+        break;
+    case TAC_RETURN:
+        fprintf(stderr, "\nTAC_RETURN ");
+        break;
+    case TAC_VEC_DECLARATION:
+        fprintf(stderr, "\nTAC_VEC_DECLARATION ");
+        break;
+    case TAC_VEC_DECLARATION_INI:
+        fprintf(stderr, "\nTAC_VEC_DECLARATION_INI ");
+        break;
+    case TAC_VEC_DECLARATION_END:
+        fprintf(stderr, "\nTAC_VEC_DECLARATION_END ");
         break;
     default:
         fprintf(stderr, "\nTAC_UNKNOWN (%d) ", tac->code);
