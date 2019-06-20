@@ -381,6 +381,8 @@ TAC* makeFuncCall(AST* node, TAC* listParam){
         }
         funcParamListWalker = funcParamListWalker->next;
     }
+    funcCallBeg->num = i;
+    funcCallEnd->num = i;
     
     return returnPointer;
 }
