@@ -104,7 +104,7 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
             return tacJoin(tacJoin(tacJoin(tacCreate(TAC_VEC_DECLARATION_INI, node->symbol, 0, 0), generated[1]), generated[2]), tacCreate(TAC_VEC_DECLARATION_END, 0, 0, 0));
             break;
         case AST_CMD_PRINT:
-            return tacJoin(tacCreate(TAC_PRINT,0, 0, 0), generated[0]);
+            return tacJoin(tacCreate(TAC_PRINT,0, 0, 0), tacJoin(generated[0], tacCreate(TAC_PRINT_END, 0, 0, 0)));
             break;
         case AST_BLOCK:
             return generated[0];
@@ -138,7 +138,7 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
             return tacJoin(tacCreate(TAC_ATRIB, node->symbol, generated[0]?generated[0]->res:0, 0), generated[0]);
             break;
         case AST_VEC_POS_ATRIB:
-            return tacJoin(tacCreate(TAC_ATRIB_VEC_POS, node->symbol, generated[0]?generated[0]->res:0, generated[1]?generated[1]->res:0), tacJoin(generated[0], generated[1]));
+            return tacJoin(generated[0], tacJoin(tacCreate(TAC_ATRIB_VEC_POS, node->symbol, generated[0]?generated[0]->res:0, generated[1]?generated[1]->res:0), generated[1]));
             break;
         case AST_FUNC_DECLARATION:
             return makeFunc(node, generated[1], generated[2]);
@@ -284,6 +284,9 @@ void tacPrintSingle(TAC *tac){
     case TAC_ARG:
         fprintf(stderr, "\nTAC_ARG ");
         break;
+    case TAC_PRINT_END:
+        fprintf(stderr, "\nTAC_PRINT_END ");
+        break;
     default:
         fprintf(stderr, "\nTAC_UNKNOWN (%d) ", tac->code);
         break;
@@ -348,7 +351,7 @@ TAC* makeLoop(TAC* expr, TAC* cLoop, hashNode* jumpLoop){
 
     TAC* labelCont = tacCreate(TAC_LABEL, newLabelCont, 0, 0);
     TAC* labelLoop = tacCreate(TAC_LABEL, newLabelLoop, 0, 0);
-    TAC* loop = tacCreate(TAC_LOOP, expr?expr->res:0, newLabelCont, newLabelLoop);
+    TAC* loop = tacCreate(TAC_LOOP, expr?expr->res:0, newLabelCont, 0);
     TAC* jump = tacCreate(TAC_JUMP, newLabelLoop, 0, 0);
     return tacJoin(labelLoop, tacJoin(expr, tacJoin(loop, tacJoin(cLoop, tacJoin(jump, labelCont)))));
 }
