@@ -25,7 +25,7 @@ int main(int argc, char** argv){
 	initMe();
 
 	if(argc < 2){
-		printf("Use o comando: ./etapa4 input.txt\n");
+		printf("Use o comando: ./etapa5 input.txt\n");
 		exit(1);	
 	}
 	
