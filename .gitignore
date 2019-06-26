@@ -1,2 +1,8 @@
 
 \.vscode/
+
+##ignoring compilation files
+*.o
+*.output
+*.tab.*
+*.yy.*
