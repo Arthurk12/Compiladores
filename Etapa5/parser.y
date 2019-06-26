@@ -57,7 +57,7 @@ FILE *out = NULL;
 
 %%
 
-programa    : declist                                                       {$$ = $1; hashPrint(); astPrint($1, 0); setDeclaration($1); checkUndeclared(); checkOperands($1); if(semanticError==false){tacPrintForward(tacGenerate($1, 0));};}
+programa    : declist                                                       {$$ = $1; hashPrint(); astPrint($1, 0); setDeclaration($1); checkUndeclared(); checkOperands($1); if(semanticError==false){tacPrintForward(invertTACList(tacGenerate($1, 0)));};}
             ;
 
 declist     : dec declist                                                   {$$ = astCreate(AST_DECLIST, 0, $1, $2, 0, 0);}

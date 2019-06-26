@@ -16,13 +16,13 @@ TAC* tacJoin(TAC* t1, TAC* t2){
     if(!t1) return t2;
     if(!t2) return t1;
 
-    TAC* aux = t1;
+    TAC* aux = t2;
 
     while(aux->next){
         aux = aux->next;
     }
-    aux->next = t2;
-    return t1;
+    aux->next = t1;
+    return t2;
 }
 
 TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
@@ -135,7 +135,7 @@ TAC* tacGenerate(AST* node, hashNode* jumpLoopIteration){
             return makeLeap(jumpLoopIteration);
             break;
         case AST_ATRIB:
-            return tacJoin(tacCreate(TAC_ATRIB, node->symbol, generated[0]?generated[0]->res:0, 0), generated[0]);
+            return tacJoin(generated[0], tacCreate(TAC_ATRIB, node->symbol, generated[0]?generated[0]->res:0, 0));
             break;
         case AST_VEC_POS_ATRIB:
             return tacJoin(generated[0], tacJoin(tacCreate(TAC_ATRIB_VEC_POS, node->symbol, generated[0]?generated[0]->res:0, generated[1]?generated[1]->res:0), generated[1]));
@@ -311,7 +311,7 @@ void tacPrintForward(TAC *tac){
 
 TAC* makeOP(int code, TAC* res1, TAC* res2){
     TAC* opTAC = tacCreate(code, makeTemp(), res1?res1->res:0, res2?res2->res:0);
-    return tacJoin(opTAC, tacJoin(res1, res2));
+    return tacJoin(res2, tacJoin(res1, opTAC));
 }
 //opTAC->res1->res2;
 
@@ -363,7 +363,7 @@ TAC* makeFunc(AST* node, TAC* param, TAC* cFunc){
 
     TAC* funcBeg = tacCreate(TAC_FUNC_BEGIN, node->symbol, labelFuncBegin, 0);
     TAC* funcEnd = tacCreate(TAC_FUNC_END, node->symbol, labelFuncEnd, 0);
-    return tacJoin(tacJoin(tacJoin(funcBeg, param), cFunc), funcEnd);
+    return tacJoin(funcBeg, tacJoin(param, tacJoin(cFunc, funcEnd)));
 }
 //func->param->labelFuncBegin->cFunc->return
 
@@ -388,4 +388,21 @@ TAC* makeFuncCall(AST* node, TAC* listParam){
     funcCallEnd->num = i;
     
     return returnPointer;
+}
+
+TAC* invertTACList(TAC* first){
+    TAC* aux = first->next? first->next:0;
+    first->next = 0;
+    TAC* aux1 = aux->next? aux->next:0;
+
+    while(aux1){
+        aux->next = first;
+        first = aux;
+        aux = aux1;
+        aux1 = aux1->next? aux1->next:0;
+    }
+    aux->next = first;
+    first = aux;
+
+    return first;
 }
